@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by jumpaku on 2017/05/23.
+ * Made a little change by inagaki on 2023/05/07
  */
 public class PointTest {
   @Test
