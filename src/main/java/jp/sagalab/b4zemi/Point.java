@@ -23,13 +23,8 @@ public class Point {
     }
     //この点ともう一つの点を t : ( 1 - t ) で内分 ( t < 0 または t > 1 の場合は外分 ) する.
     public Point divide(Point _other,double t){
-        double px = getX();
-        double py = getY();
-        double qx = _other.getX();
-        double qy = _other.getY();
-
-        double divx = ((1-t) * px + t * qx);
-        double divy = ((1-t) * py + t * qy);
+        double divx = ((1-t) * m_x + t * _other.getX());
+        double divy = ((1-t) * m_y + t * _other.getY());
 
         return create(divx,divy);
     }
