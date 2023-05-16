@@ -3,29 +3,70 @@ package jp.sagalab.b4zemi;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * n次のBezier曲線を表すクラスです。
+ * @author yusa
+ */
 public class BezierCurve {
     //フィールド 制御点列
+    /**
+     * Bezier曲線を生成します。
+     * @param _controlPoints 制御点列
+     * @return Bezier曲線
+     */
+
+    /** 制御点列 */
     private final List<Point> m_controlPoints;
-    //コンストラクタ 制御点列を指定してBezier曲線オブジェクトを生成する．
+
+    /**
+     * 制御点列を指定してBezier曲線オブジェクトを生成するコンストラクタ
+     * @param _controlPoints 制御点列
+     */
     private BezierCurve(List<Point> _controlPoints){
+
         m_controlPoints = _controlPoints;
     }
-    //ファクトリーメソッド
+
+    /**
+     * Bezier曲線の生成を行うためのstaticファクトリーメソッド
+     * @param _controlPoints 制御点列
+     * @return Bezier曲線のインスタンス
+     */
     public static BezierCurve create(List<Point> _controlPoints){
+
         return new BezierCurve(_controlPoints);
     }
-    //getControlPoints制御点列のコピーを取得する
+
+    /**
+     * 制御点列のコピーを取得するメソッド
+     * @return 制御点列のコピー
+     */
+
     public List<Point> getControlPoints(){
+
         return m_controlPoints;
     }
 
-    //getDegree次数を取得する．
+    /**
+     * getDegree次数を取得するメソッド
+     * @return 次数
+     */
+
     public int getDegree(){
+
         return getControlPoints().size() - 1;
     }
-    //evaluate パラメータ t に対応する評価点を De Casteljau のアルゴリズムで評価する．
+
+    /**
+     * //evaluate パラメータ t に対応する評価点を De Casteljau のアルゴリズムで評価するメソッドです。
+     * @param _t 閉区間 [ 0, 1 ] 内のパラメータ
+     * @return パラメータ t に対応する評価点
+     */
+
     public Point evaluate(double _t){
+
         List<Point> bezierPoints  = new ArrayList<Point>();
+
         if(m_controlPoints.size() == 1){
             return m_controlPoints.get(0);
         }
