@@ -83,6 +83,7 @@ public class Drawer extends JPanel {
     this.setBackground(Color.WHITE);
     this.addMouseListener(new MouseAdapter() {
       @Override
+      //マウスをクリックしたときの処理
       public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
 
@@ -98,5 +99,4 @@ public class Drawer extends JPanel {
   private static final float STROKE_WIDTH = 1.5f;
   /** 点を描画する際の半径 */
   private static final double POINT_RADIUS = 3.0;
-
 }
