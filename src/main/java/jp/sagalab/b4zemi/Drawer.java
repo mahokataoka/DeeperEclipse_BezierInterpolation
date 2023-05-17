@@ -37,6 +37,12 @@ public class Drawer extends JPanel {
     frame.setVisible(true);
   }
 
+//  @Override
+//  public void paintComponent(Graphics g) {
+//    super.paintComponent(g);
+//    drawPoint(100,100,Color.BLACK,g);
+//  }
+
   /**
    * 指定した座標を指定した色でパネルに描画します．
    * @param _x     点のx座標
@@ -87,9 +93,26 @@ public class Drawer extends JPanel {
       public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
 
+        Point q = Point.create(e.getX(),e.getY());
+        point = q;
+
+        repaint();
+//        drawPoint( e.getX() , e.getY() , Color.red , g);
       }
+
     });
+    MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
+    this.addMouseListener(myMouseAdapter);
   }
+  @Override
+  public void paintComponent(Graphics g) {
+    super.paintComponent(g);
+//    Point point = Point.create(0,0);
+    drawPoint(point.getX(),point.getY(),Color.BLACK,g);
+    System.out.println("paint");
+  }
+  Point point = Point.create(0,0);
+
 
   /** 描画パネルの横幅 */
   private static final int WIDTH_SIZE = 800;

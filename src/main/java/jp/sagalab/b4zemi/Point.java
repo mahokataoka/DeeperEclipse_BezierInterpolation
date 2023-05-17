@@ -18,7 +18,7 @@ public class Point {
     private final double m_y;
 
     /**
-     * 指定した座標にある点を生成するメソッド
+     * 指定した座標にある点を生成する
      * @param _x x座標
      * @param _y y座標
      */
