@@ -53,11 +53,15 @@ public class Drawer extends JPanel {
     frame.setVisible(true);
   }
 
+  /**
+   * パネルに描画を行います．
+   * @param _g  the <code>Graphics</code> context in which to paint
+   */
   @Override
   // JComponentクラスにあるpaintメソッドをオーバーライドしています．
   //　repaintメソッドを使用するとpaintメソッドが呼び出されるため，repaintメソッドを用いて再描画を行うことをおすすめします．
-  public void paint(Graphics g) {
-    super.paint(g);
+  public void paint(Graphics _g) {
+    super.paint(_g);
     // 描画処理を記述する．
     /*
       制御点列のリストに制御点が入っている場合は描画を行うような処理を記述する．
@@ -69,8 +73,8 @@ public class Drawer extends JPanel {
   }
 
   /**
-   * 指定した点の座標を指定した色で描画パネルに描画します．
-   * @param _point     点
+   * 指定した点を指定した色でパネルに描画します．
+   * @param _point 点
    * @param _color 色
    * @param _g     グラフィックス
    */
@@ -86,17 +90,17 @@ public class Drawer extends JPanel {
       // 描画する際の線の幅を設定します．
       g2D.setStroke(new BasicStroke(STROKE_WIDTH));
       // 指定した座標に指定した半径の点を描画します．
-      g2D.draw(new Ellipse2D.Double(_point.getX - radius, _point.getY - radius, radius * 2, radius * 2));
+      g2D.draw(new Ellipse2D.Double(_point.getX() - radius, _point.getY() - radius, radius * 2, radius * 2));
     } else {
       // 指定した座標に指定した半径の点を描画します．
-      _g.drawOval((int) (_point.getX - radius), (int) (_point.getY - radius), (int) (radius * 2), (int) (radius * 2));
+      _g.drawOval((int) (_point.getX() - radius), (int) (_point.getY() - radius), (int) (radius * 2), (int) (radius * 2));
     }
   }
 
   /**
    * 指定した２つの点の座標を結ぶ線分を指定した色で描画します．
-   * @param _p1    1点目の点
-   * @param _p2    2点目の点
+   * @param _p1    1つ目の点
+   * @param _p2    ２つ目の点
    * @param _color 色
    * @param _g     グラフィックス
    */
@@ -110,25 +114,30 @@ public class Drawer extends JPanel {
       // 描画する際の線の幅を設定します．
       g2D.setStroke(new BasicStroke(STROKE_WIDTH));
       // 1点目と2点目を結ぶ線分を描画します．
-      g2D.draw(new Line2D.Double(_p1.getX, _p1.getY, _p2.getX, _p2.getY));
+      g2D.draw(new Line2D.Double(_p1.getX(), _p1.getY(), _p2.getX(), _p2.getY()));
     } else {
       // 1点目と2点目を結ぶ線分を描画します．
-      _g.drawLine((int) _p1.getX, (int) _p1.getY, (int) _p2.getX, (int) _p2.getY);
+      _g.drawLine((int) _p1.getX(), (int) _p1.getY(), (int) _p2.getX(), (int) _p2.getY());
     }
   }
 
   /**
-   * 制御点列がらBezier曲線オブジェクトを生成し，評価点列を求めます．
+   * 制御点列からBezierCurveのインスタンスを生成し，評価点列を求めます.
    */
   public void calculate() {
+    /*
+      ここにBezierCurveのインスタンスを生成し評価点列を求める処理を記述する．
+     */
 
+    // 求めた評価点列をm_evaluatePointsに設定します．
+    setEvaluatePoints();
   }
 
   /**
    * メンバ変数の評価点列を引数で指定した評価点列に設定します．
    * @param _evaluatePoints 評価点列
    */
-  public void setEvaluateList(List<Point> _evaluatePoints) {
+  public void setEvaluatePoints(List<Point> _evaluatePoints) {
     m_evaluatePoints = _evaluatePoints;
   }
 
