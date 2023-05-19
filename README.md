@@ -36,12 +36,14 @@
 
 ### ヒント
 - mouseClickedメソッド内でマウスの座標を取得する場合は，MouseEvent型の引数eを用いて次のように取得できます．
-  - x座標：e.getX
-  - y座標：e.getY
+  - x座標：e.getX()
+  - y座標：e.getY()
 
 
-- 描画の際に引数としてグラフィックスを与える場合はgetGraphicsメソッドを使用して次のように取得してください．
-  - グラフィックス：getGraphics()
+- paintメソッド内で描画を行う際のグラフィックスはpaintメソッドの引数_gを使用して次のように描画を行ってください．
+   - 点の描画：drawpoint(point, color, _g)
+   - 線の描画：drawLine(point1, point2, color, _g)
+   - ※point, point1, point2はPoint型の変数，colorはColor型の変数
 
 
 - 色はColorクラスから持ってきてください．よく使う色であればColorクラス内で定数として定義されているので次のように取得してください．
