@@ -6,6 +6,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 描画用のパネルを生成します．
@@ -95,6 +97,8 @@ public class Drawer extends JPanel {
 
         Point q = Point.create(e.getX(),e.getY());
         point = q;
+        inputPoints.add(q);
+        System.out.println(inputPoints.get(0));
 
         repaint();
 //        drawPoint( e.getX() , e.getY() , Color.red , g);
@@ -112,7 +116,7 @@ public class Drawer extends JPanel {
     System.out.println("paint");
   }
   Point point = Point.create(0,0);
-
+  List<Point> inputPoints  = new ArrayList<Point>();
 
   /** 描画パネルの横幅 */
   private static final int WIDTH_SIZE = 800;
