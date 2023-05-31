@@ -69,13 +69,25 @@ public class Drawer extends JPanel {
   public void paint(Graphics _g) {
     super.paint(_g);
     // 描画処理を記述する．
+
     /*
       制御点列のリストに制御点が入っている場合は描画を行うような処理を記述する．
      */
+    if(m_controlPoints.size() >= 1){
+      for(int i=0; i<m_controlPoints.size(); i++) {
+        drawPoint(m_controlPoints.get(i), Color.blue, _g);
+      }
+    }
 
     /*
       評価点列のリストに評価点が入っている場合は描画を行うような処理を記述する．
      */
+    if(m_evaluatePoints.size() >= 1){
+      for(int i=0; i<m_evaluatePoints.size()-1; i++){
+        drawLine(m_evaluatePoints.get(i), m_evaluatePoints.get(i+1), Color.red, _g);
+      }
+    }
+
   }
 
   /**
@@ -134,10 +146,15 @@ public class Drawer extends JPanel {
     /*
       ここにBezierCurveのインスタンスを生成し評価点列を求める処理を記述する．
      */
-
+    BezierCurve bezierCurve = BezierCurve.create(m_controlPoints);
+    List<Point> evaluatelist = new ArrayList<>();
+    for(double t=0; t<=1; t+=0.001) {
+      Point points = bezierCurve.evaluate(t);
+      evaluatelist.add(points);
+    }
     // 求めた評価点列をm_evaluatePointsに設定します．
-    List<Point> a  = new ArrayList<Point>();
-    setEvaluatePoints(a);
+
+    setEvaluatePoints(evaluatelist);
   }
 
   /**
@@ -171,15 +188,19 @@ public class Drawer extends JPanel {
 
 
         Point q = Point.create(e.getX(),e.getY());
-        point = q;
-        inputPoints.add(q);
-        System.out.println(inputPoints.get(0));
+        m_controlPoints.add(q);
 
-        repaint();
+        if(m_controlPoints.size()>=3){
+          calculate();
+        }
+//        inputPoints.add(q);
+//        System.out.println(inputPoints.get(0));
+
+
 //        drawPoint( e.getX() , e.getY() , Color.red , g);
 
         // repaintメソッドを用いてpaintメソッドを呼び出す
-
+        repaint();
 
       }
 
@@ -187,15 +208,15 @@ public class Drawer extends JPanel {
     MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
     this.addMouseListener(myMouseAdapter);
   }
-  @Override
-  public void paintComponent(Graphics g) {
-    super.paintComponent(g);
-//    Point point = Point.create(0,0);
-    drawPoint(point,Color.BLACK,g);
-    System.out.println("paint");
-  }
-  Point point = Point.create(0,0);
-  List<Point> inputPoints  = new ArrayList<Point>();
+//  @Override
+//  public void paintComponent(Graphics g) {
+//    super.paintComponent(g);
+////    Point point = Point.create(0,0);
+//    drawPoint(point,Color.BLACK,g);
+//    System.out.println("paint");
+//  }
+//  Point point = Point.create(0,0);
+//  List<Point> inputPoints  = new ArrayList<>();
 
   /** 描画パネルの横幅 */
   private static final int WIDTH_SIZE = 800;
