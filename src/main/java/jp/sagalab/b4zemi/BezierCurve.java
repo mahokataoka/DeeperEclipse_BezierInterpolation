@@ -63,18 +63,47 @@ public class BezierCurve {
      * @return パラメータ t に対応する評価点
      */
 
+//    public Point evaluate(double _t){
+//
+//        List<Point> bezierPoints  = new ArrayList<Point>();
+//
+//        if(m_controlPoints.size() == 1){
+//            return m_controlPoints.get(0);
+//        }
+//        for(int i = 0;i < getDegree();i++){
+//            bezierPoints.add(m_controlPoints.get(i).divide(m_controlPoints.get(i+1),_t));
+//        }
+//        BezierCurve b = BezierCurve.create(bezierPoints);
+//        return b.evaluate(_t);
+//
+//    }
+    //Bernstein 多項式表現
+
     public Point evaluate(double _t){
+        double sumx = 0;
+        double sumy = 0;
 
-        List<Point> bezierPoints  = new ArrayList<Point>();
+        for(int i=0;i<getDegree();i++){
 
-        if(m_controlPoints.size() == 1){
-            return m_controlPoints.get(0);
+            sumx += m_controlPoints.get(i).getX()*bernstein(i,_t);
+            sumy += m_controlPoints.get(i).getY()*bernstein(i,_t);
+
         }
-        for(int i = 0;i < getDegree();i++){
-            bezierPoints.add(m_controlPoints.get(i).divide(m_controlPoints.get(i+1),_t));
-        }
-        BezierCurve b = BezierCurve.create(bezierPoints);
-        return b.evaluate(_t);
+        return Point.create(sumx,sumy);
 
+    }
+    int recursion(int n){
+        if (n == 0){
+            return 1;
+        }
+        return n * recursion(n-1);
+    }
+
+    int ni(int i){
+        return  recursion(getDegree())/recursion(i)*recursion(getDegree()-i);
+    }
+
+    double bernstein(int i,double t){
+        return (ni(i)*Math.pow(t,i)*Math.pow((1-t),getDegree()-i));
     }
 }
