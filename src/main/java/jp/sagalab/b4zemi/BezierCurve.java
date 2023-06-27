@@ -79,31 +79,49 @@ public class BezierCurve {
 //    }
     //Bernstein 多項式表現
 
-    public Point evaluate(double _t){
-        double sumx = 0;
-        double sumy = 0;
+//    public Point evaluate(double _t){
+//        double sumx = 0;
+//        double sumy = 0;
+//
+//        for(int i=0;i<=getDegree();i++){
+//
+//            sumx += m_controlPoints.get(i).getX()*bernstein(i,_t);
+//            sumy += m_controlPoints.get(i).getY()*bernstein(i,_t);
+//
+//        }
+//        return Point.create(sumx,sumy);
+//
+//    }
+    public  Point evaluate(double _t,double _w1){
+        double w0 = 1;
+        double w2 = 1;
+        double topx = 0;
+        double topy = 0;
+        double bottom = 0;
 
-        for(int i=0;i<getDegree();i++){
+        topx = (w0*m_controlPoints.get(0).getX()*bernstein(0,_t))+(_w1*m_controlPoints.get(1).getX()*bernstein(1,_t))+(w2*m_controlPoints.get(2).getX()*bernstein(2,_t));
+        topy = (w0*m_controlPoints.get(0).getY()*bernstein(0,_t))+(_w1*m_controlPoints.get(1).getY()*bernstein(1,_t))+(w2*m_controlPoints.get(2).getY()*bernstein(2,_t));
+        bottom = (w0*bernstein(0,_t))+(_w1*bernstein(1,_t))+(w2*bernstein(2,_t));
 
-            sumx += m_controlPoints.get(i).getX()*bernstein(i,_t);
-            sumy += m_controlPoints.get(i).getY()*bernstein(i,_t);
-
-        }
-        return Point.create(sumx,sumy);
+        return Point.create(topx/bottom,topy/bottom);
 
     }
-    int recursion(int n){
-        if (n == 0){
+
+    //階乗
+     public int recursion(int _n){
+        if (_n == 0){
             return 1;
         }
-        return n * recursion(n-1);
+        return _n * recursion(_n-1);
     }
 
-    int ni(int i){
-        return  recursion(getDegree())/recursion(i)*recursion(getDegree()-i);
+    //(n,i)=nCi
+    public int combination(int _i){
+        return recursion(getDegree())/(recursion(_i)*recursion(getDegree() - _i));
     }
 
-    double bernstein(int i,double t){
-        return (ni(i)*Math.pow(t,i)*Math.pow((1-t),getDegree()-i));
+    double bernstein(int _i,double _t){
+        return (combination(_i)*Math.pow(_t,_i)*Math.pow((1-_t),getDegree()-_i));
     }
+
 }

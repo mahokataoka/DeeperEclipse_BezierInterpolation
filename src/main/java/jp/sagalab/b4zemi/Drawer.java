@@ -23,6 +23,7 @@ public class Drawer extends JPanel {
    * @throws IllegalArgumentException 線の幅が0以下であった場合
    * @throws IllegalArgumentException 点の半径が0以下であった場合
    */
+  double w1 = 100;
   public static void create() {
     // インスタンス生成前に不正な値がないかチェックします．
     if (WIDTH_SIZE <= 0) {
@@ -148,8 +149,9 @@ public class Drawer extends JPanel {
      */
     BezierCurve bezierCurve = BezierCurve.create(m_controlPoints);
     List<Point> evaluatelist = new ArrayList<>();
+
     for(double t=0; t<=1; t+=0.001) {
-      Point points = bezierCurve.evaluate(t);
+      Point points = bezierCurve.evaluate(t,w1);
       evaluatelist.add(points);
     }
     // 求めた評価点列をm_evaluatePointsに設定します．

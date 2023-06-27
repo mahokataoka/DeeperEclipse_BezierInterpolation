@@ -7,6 +7,9 @@ public class Main {
 //        BezierCurve bezierCurve = new BezierCurve();
 //        drawer.drawPoint(bezierCurve.getControlPoints());
         Drawer.create();
+
     }
+
+
 
 }
