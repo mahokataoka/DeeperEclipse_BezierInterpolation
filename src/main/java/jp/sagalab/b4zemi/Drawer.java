@@ -23,7 +23,7 @@ public class Drawer extends JPanel {
    * @throws IllegalArgumentException 線の幅が0以下であった場合
    * @throws IllegalArgumentException 点の半径が0以下であった場合
    */
-  double w1 = 100;
+  double w1 = Math.cos(Math.PI/2);
   public static void create() {
     // インスタンス生成前に不正な値がないかチェックします．
     if (WIDTH_SIZE <= 0) {
@@ -88,6 +88,11 @@ public class Drawer extends JPanel {
         drawLine(m_evaluatePoints.get(i), m_evaluatePoints.get(i+1), Color.red, _g);
       }
     }
+    if(m_evaluatePoints2.size() >= 1){
+      for(int i=0; i<m_evaluatePoints2.size()-1; i++){
+        drawLine(m_evaluatePoints2.get(i), m_evaluatePoints2.get(i+1), Color.black, _g);
+      }
+    }
 
   }
 
@@ -147,17 +152,28 @@ public class Drawer extends JPanel {
     /*
       ここにBezierCurveのインスタンスを生成し評価点列を求める処理を記述する．
      */
+
     BezierCurve bezierCurve = BezierCurve.create(m_controlPoints);
     List<Point> evaluatelist = new ArrayList<>();
+    List<Point> evaluatelist2 = new ArrayList<>();
 
     for(double t=0; t<=1; t+=0.001) {
       Point points = bezierCurve.evaluate(t,w1);
       evaluatelist.add(points);
     }
-    // 求めた評価点列をm_evaluatePointsに設定します．
 
+    // 求めた評価点列をm_evaluatePointsに設定します．
     setEvaluatePoints(evaluatelist);
+
+    for(double t=0; t<=1; t+=0.001) {
+      Point points2 = bezierCurve.evaluate(t,-w1);
+      evaluatelist2.add(points2);
+    }
+    setEvaluatePoints2(evaluatelist2);
   }
+
+
+
 
   /**
    * メンバ変数の評価点列を引数で指定した評価点列に設定します．
@@ -165,6 +181,10 @@ public class Drawer extends JPanel {
    */
   public void setEvaluatePoints(List<Point> _evaluatePoints) {
     m_evaluatePoints = _evaluatePoints;
+
+  }
+  public void setEvaluatePoints2(List<Point> _evaluatePoints2){
+    m_evaluatePoints2 = _evaluatePoints2;
   }
 
   /**
@@ -232,4 +252,5 @@ public class Drawer extends JPanel {
   private final List<Point> m_controlPoints = new ArrayList<>();
   /** 評価点列 */
   private List<Point> m_evaluatePoints = new ArrayList<>();
+  private List<Point> m_evaluatePoints2 =new ArrayList<>();
 }
