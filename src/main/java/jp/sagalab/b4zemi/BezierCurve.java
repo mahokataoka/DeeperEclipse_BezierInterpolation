@@ -92,20 +92,33 @@ public class BezierCurve {
 //        return Point.create(sumx,sumy);
 //
 //    }
-    public  Point evaluate(double _t,double _w1){
-        double w0 = 1;
-        double w2 = 1;
-        double topx = 0;
-        double topy = 0;
-        double bottom = 0;
+//    public  Point evaluate(double _t,double _w1){
+//        double w0 = 1;
+//        double w2 = 1;
+//        double topx = 0;
+//        double topy = 0;
+//        double bottom = 0;
+//
+//        topx = (w0*m_controlPoints.get(0).getX()*bernstein(0,_t))+(_w1*m_controlPoints.get(1).getX()*bernstein(1,_t))+(w2*m_controlPoints.get(2).getX()*bernstein(2,_t));
+//        topy = (w0*m_controlPoints.get(0).getY()*bernstein(0,_t))+(_w1*m_controlPoints.get(1).getY()*bernstein(1,_t))+(w2*m_controlPoints.get(2).getY()*bernstein(2,_t));
+//        bottom = (w0*bernstein(0,_t))+(_w1*bernstein(1,_t))+(w2*bernstein(2,_t));
+//
+//        return Point.create(topx/bottom,topy/bottom);
+//
+//    }
+    public Point evaluate(double _t,double _w1){
+        double p0 = bernstein(0,_t)-bernstein(1,_t)/2;
+        double p1 = bernstein(1,_t);
+        double p2 = bernstein(2,_t)-bernstein(1,_t)/2;
 
-        topx = (w0*m_controlPoints.get(0).getX()*bernstein(0,_t))+(_w1*m_controlPoints.get(1).getX()*bernstein(1,_t))+(w2*m_controlPoints.get(2).getX()*bernstein(2,_t));
-        topy = (w0*m_controlPoints.get(0).getY()*bernstein(0,_t))+(_w1*m_controlPoints.get(1).getY()*bernstein(1,_t))+(w2*m_controlPoints.get(2).getY()*bernstein(2,_t));
-        bottom = (w0*bernstein(0,_t))+(_w1*bernstein(1,_t))+(w2*bernstein(2,_t));
+
+        double topx = (m_controlPoints.get(0).getX()*p0+m_controlPoints.get(1).getX()*p1*(_w1+1)+m_controlPoints.get(2).getX()*p2);
+        double topy = (m_controlPoints.get(0).getY()*p0+m_controlPoints.get(1).getY()*p1*(_w1+1)+m_controlPoints.get(2).getY()*p2);
+        double bottom = (p0+(_w1+1)*p1+p2);
 
         return Point.create(topx/bottom,topy/bottom);
-
     }
+
 
     //階乗
      public int recursion(int _n){
