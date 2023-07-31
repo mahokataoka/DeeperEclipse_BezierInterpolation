@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -203,18 +204,31 @@ public class Drawer extends JPanel {
         // スーパークラスであるMouseAdapterクラスにあるmouseClickedメソッドを呼び出します．
         //ただし今回の場合は，MouseAdapterクラスにあるmouseClickedメソッドは処理の中身が書かれていないため呼び出す必要はないが，
         //慣例として記載しています．
-        super.mouseClicked(e);
+//        super.mouseClicked(e);
         /*
           ここにマウスをクリックしたときの処理を記述する．
          */
+        new MouseAdapter() {
+          @Override
+          public void mousePressed(MouseEvent e) {
+
+          }
+
+          @Override
+          public void mouseReleased(MouseEvent e) {
+            calculate();
+          }
+        };
 
 
-        Point q = Point.create(e.getX(),e.getY());
-        m_controlPoints.add(q);
 
-        if(m_controlPoints.size()>=3){
-          calculate();
-        }
+
+//        Point q = Point.create(e.getX(),e.getY());
+//        m_controlPoints.add(q);
+//
+//        if(m_controlPoints.size()>=3){
+//          calculate();
+//        }
 //        inputPoints.add(q);
 //        System.out.println(inputPoints.get(0));
 
@@ -229,7 +243,47 @@ public class Drawer extends JPanel {
     });
     MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
     this.addMouseListener(myMouseAdapter);
+    this.addMouseMotionListener(
+            new MouseMotionAdapter() {
+              @Override
+              public void mouseDragged(MouseEvent e) {
+                Point point = Point.createXYT(e.getX(), e.getY(),System.currentTimeMillis() * 0.001);
+                m_points.add(point);
+                drawPoint(point,Color.BLACK,getGraphics());
+                for(int i=0;i<m_points.size()-1;i++){
+                  System.out.println(m_points.get(i));
+                }
+
+              }
+            }
+    );
   }
+  /**
+   * 点列の時刻パラメータが0始まりになるように全体をシフトします.
+   */
+  public List<Point> shiftPointsTimeZero() {
+    return normalizePoints(Range.create(0, 1));
+  }
+
+  /**
+   * 点列の時刻パラメータの正規化をします.
+   * m_points全体の時刻パラメータが_range区間に収まるように正規化します.
+   *
+   * @param _range 正規化後の時刻パラメータの範囲
+   */
+  public List<Point> normalizePoints(Range _range) {
+    double startTime = m_points.get(0).time();
+    double timeLength = m_points.get(m_points.size() - 1).time() - startTime;
+    double rangeLength = _range.length();
+    List<Point> points = new ArrayList<>();
+    for (Point point : m_points) {
+      points.add(Point.createXYT(point.getX(), point.getY()
+              , _range.start() + (point.time() - startTime) * (rangeLength / timeLength)));
+    }
+
+    return points;
+  }
+
 //  @Override
 //  public void paintComponent(Graphics g) {
 //    super.paintComponent(g);
@@ -253,4 +307,7 @@ public class Drawer extends JPanel {
   /** 評価点列 */
   private List<Point> m_evaluatePoints = new ArrayList<>();
   private List<Point> m_evaluatePoints2 =new ArrayList<>();
+
+  /** ドラッグで打たれた点列を保持するリスト */
+  private List<Point> m_points = new ArrayList<>();
 }
