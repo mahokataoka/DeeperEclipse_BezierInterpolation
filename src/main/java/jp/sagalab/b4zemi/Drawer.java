@@ -250,9 +250,10 @@ public class Drawer extends JPanel {
                 Point point = Point.createXYT(e.getX(), e.getY(),System.currentTimeMillis() * 0.001);
                 m_points.add(point);
                 drawPoint(point,Color.BLACK,getGraphics());
-                for(int i=0;i<m_points.size()-1;i++){
-                  System.out.println(m_points.get(i));
-                }
+                normalizePoints(Range.create(0.0, 1.0));
+//                for(int i=0;i<m_points.size()-1;i++){
+//                  System.out.println(m_points.get(i));
+//                }
 
               }
             }
