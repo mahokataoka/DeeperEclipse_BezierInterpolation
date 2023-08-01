@@ -107,42 +107,72 @@ public class BezierCurve {
 //
 //    }
     public Point evaluate(double _t,double _w1){
-        double p0 = bernstein(0,_t)-bernstein(1,_t)/2;
-        double p1 = bernstein(1,_t);
-        double p2 = bernstein(2,_t)-bernstein(1,_t)/2;
+        double p0 = bernstein(0,_t, getDegree())-bernstein(1,_t, getDegree())/2;
+        double p1 = bernstein(1,_t, getDegree());
+        double p2 = bernstein(2,_t, getDegree())-bernstein(1,_t, getDegree())/2;
 
         double topx = (m_controlPoints.get(0).getX()*p0+m_controlPoints.get(1).getX()*p1*(_w1+1)+m_controlPoints.get(2).getX()*p2);
         double topy = (m_controlPoints.get(0).getY()*p0+m_controlPoints.get(1).getY()*p1*(_w1+1)+m_controlPoints.get(2).getY()*p2);
         double bottom = (p0+(_w1+1)*p1+p2);
 
         return Point.create(topx/bottom,topy/bottom);
+
+//        double x = m_controlPoints.get(0).getX() * bernstein(0, _t, getDegree()) +
+//                m_controlPoints.get(1).getX() * bernstein(1, _t, getDegree()) +
+//                m_controlPoints.get(2).getX() * bernstein(2, _t, getDegree());
+//
+//        double y= m_controlPoints.get(0).getY() * bernstein(0, _t, getDegree()) +
+//                m_controlPoints.get(1).getY() * bernstein(1, _t, getDegree()) +
+//                m_controlPoints.get(2).getY() * bernstein(2, _t, getDegree());
+//
+//        return Point.create(x, y);
     }
 
-    public double[] B(double _t, double _w1){
+    public static double[] Brow(double _t, double _w1){
 
-        double p0 = bernstein(0,_t)-bernstein(1,_t)/2;
-        double p1 = bernstein(1,_t);
-        double p2 = bernstein(2,_t)-bernstein(1,_t)/2;
-        return null;
+        double p0 = bernstein(0,_t, 2)-bernstein(1,_t, 2)/2;
+        double p1 = bernstein(1,_t, 2);
+        double p2 = bernstein(2,_t, 2)-bernstein(1,_t, 2)/2;
+
+        double Brow[] = new double[3];
+
+        double onecol = p0 / (p0 + (_w1 + 1) * p1 + p2);
+        double twocol = ((_w1 + 1) * p1) / (p0 + (_w1 + 1) * p1 + p2);
+        double threecol = p2 / (p0 + (_w1 + 1) * p1 + p2);
+
+        Brow[0] = onecol;
+        Brow[1] = twocol;
+        Brow[2] = threecol;
+
+//        Brow[0] = bernstein(0, _t, 2);
+//        Brow[1] = bernstein(1, _t, 2);
+//        Brow[2] = bernstein(2, _t, 2);
+
+        return Brow;
 
     }
+
 
 
     //階乗
-     public int recursion(int _n){
-        if (_n == 0){
+     public static int recursion(int _n){
+        if(_n==0){
             return 1;
         }
-        return _n * recursion(_n-1);
+        int result = 1;
+        for(int i=1; i<=_n; i++){
+            result*=i;
+        }
+        return  result;
     }
 
     //(n,i)=nCi
-    public int combination(int _i){
-        return recursion(getDegree())/(recursion(_i)*recursion(getDegree() - _i));
+    public static int combination(int _i, int _degree){
+        return recursion(_degree)/(recursion(_i)*recursion(_degree - _i));
     }
 
-    double bernstein(int _i,double _t){
-        return (combination(_i)*Math.pow(_t,_i)*Math.pow((1-_t),getDegree()-_i));
+    static double bernstein(int _i,double _t, int _degree){
+        return (combination(_i, _degree)*Math.pow(_t,_i)*Math.pow((1-_t),_degree - _i));
     }
 
 }
