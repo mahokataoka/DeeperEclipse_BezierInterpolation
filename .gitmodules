@@ -1,0 +1,3 @@
+[submodule "jftk"]
+	path = jftk
+	url = git@github.com:muit-islab/jftk.git

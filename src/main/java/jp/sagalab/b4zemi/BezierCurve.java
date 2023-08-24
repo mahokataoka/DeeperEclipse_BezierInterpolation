@@ -128,6 +128,7 @@ public class BezierCurve {
 //        return Point.create(x, y);
     }
 
+
     public static double[] Brow(double _t, double _w1){
 
         double p0 = bernstein(0,_t, 2)-bernstein(1,_t, 2)/2;
@@ -150,6 +151,19 @@ public class BezierCurve {
 
         return Brow;
 
+    }
+
+    //fにかける部分のみの基底関数
+    public static double[] rowf(double _t, double _w1){
+        double p0 = bernstein(0,_t, 2)-bernstein(1,_t, 2)/2;
+        double p1 = bernstein(1,_t, 2);
+        double p2 = bernstein(2,_t, 2)-bernstein(1,_t, 2)/2;
+
+        double Brow[] = new double[1];
+        double twocol = ((_w1 + 1) * p1) / (p0 + (_w1 + 1) * p1 + p2);
+        Brow[0] = twocol;
+
+        return Brow;
     }
 
 
