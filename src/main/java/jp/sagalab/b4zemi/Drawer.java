@@ -92,13 +92,14 @@ public class Drawer extends JPanel {
     }
     if(m_evaluatePoints2.size() >= 1){
       for(int i=0; i<m_evaluatePoints2.size()-1; i++){
-        drawLine(m_evaluatePoints2.get(i), m_evaluatePoints2.get(i+1), Color.black, _g);
+        drawLine(m_evaluatePoints2.get(i), m_evaluatePoints2.get(i+1), Color.red, _g);
       }
     }
 
     for(int i=0; i<=m_points.size()-1; i++){
       drawPoint(m_points.get(i),Color.BLACK, _g);
     }
+
 
   }
 
@@ -230,13 +231,17 @@ public class Drawer extends JPanel {
 
     //規格化楕円弧モデルと入力点列の距離を比較
     for (int i=0; i<dList.size(); i++) {
-      for (int j = 0; j < distancelist.size()-1; j++) {
-        if (dList.get(i) == distancelist.get(j)) {
-          distanceT.add((double) (j / 1000));
-        }else if (dList.get(i) < distancelist.get(j) && dList.get(i) > distancelist.get(j-1)) {
-          double a = (dList.get(i) - distancelist.get(j-1)) / (distancelist.get(j) - distancelist.get(j - 1));
-          double b = (j - 1) + a;
-          distanceT.add(b / 1000);
+      for (int j = 1; j < distancelist.size(); j++) {
+        if (dList.get(i) >= distancelist.get(j-1) && dList.get(i) < distancelist.get(j)) {
+          //線分abをm:nに内分する
+          double m = dList.get(i)-distancelist.get(j-1);
+          double n = distancelist.get(j)-dList.get(i);
+          double t = (n * (j-1)/999 + m * j/999) / (m + n);
+          distanceT.add(t);
+          break;
+        }else if(dList.get(i) == distancelist.get(j)){
+          distanceT.add(1.0);
+          break;
         }
       }
     }
