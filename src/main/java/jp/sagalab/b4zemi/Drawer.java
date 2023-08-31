@@ -1,5 +1,7 @@
 package jp.sagalab.b4zemi;
 
+import jp.sagalab.jftk.optimizer.NelderMead;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -14,7 +16,7 @@ import java.util.List;
  * 描画用のパネルを生成します．
  * @author inagaki
  */
-public class Drawer extends JPanel {
+public class Drawer extends JPanel{
 
   /**
    * 描画用のパネルの生成を行うためのstaticファクトリーメソッドです．

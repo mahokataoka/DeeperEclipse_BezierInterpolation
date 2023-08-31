@@ -71,6 +71,12 @@ public class Point {
     public double time() {
         return m_t;
     }
+    public static void setW(double _w){
+        m_w = _w;
+    }
+    public static double getW(){
+        return m_w;
+    }
 
     /**
      * この Point の文字列表現を返します。
@@ -112,5 +118,6 @@ public class Point {
     private final double m_y;
 
     public final double m_t;
+    private static double m_w;
 
 }
