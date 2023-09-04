@@ -297,11 +297,14 @@ public class Drawer extends JPanel{
 
         Search search = Search.create(m_points);
 
-        m_evaluatePoints = search.m_evaluatePoints;
+//        m_evaluatePoints = search.m_evaluatePoints;
 
         m_controlPoints.add(0, search.m_controlPoints.get(0));
         m_controlPoints.add(1, search.m_controlPoints.get(1));
         m_controlPoints.add(2, search.m_controlPoints.get(2));
+
+        //求めた制御点からBezier曲線の評価点を求めていて、m_evaluatePointsにその評価点の値が入る
+        calculate();
 
         for (int i=0; i<=m_evaluatePoints.size()-2; i++) {
           drawLine(m_evaluatePoints.get(i), m_evaluatePoints.get(i + 1), Color.BLUE, getGraphics());

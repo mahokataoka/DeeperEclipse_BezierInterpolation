@@ -264,9 +264,6 @@ public class Search implements NelderMead.ObjectiveFunction {
             points.add(Point.createXYT(m_points.get(i).getX(), m_points.get(i).getY(), distanceT.get(i)));
         }
 
-        System.out.println(dList);
-        System.out.println(points);
-
         return points;
     }
 
