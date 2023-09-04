@@ -16,7 +16,7 @@ public class Range {
      * @throws IllegalArgumentException 終了値が無限大または非数の場合
      * @throws IllegalArgumentException 開始値が終了地より大きい場合
      */
-    public static Range create(double _start, double _end) {
+    public static Range creates(double _start, double _end) {
         if (Double.isNaN(_start) || Double.isInfinite(_start)) {
             throw new IllegalArgumentException("_start is illegal number(_start: " + _start + ")");
         }
@@ -134,7 +134,7 @@ public class Range {
      * @return 複製した範囲
      */
     public Range copy() {
-        return Range.create(m_start, m_end);
+        return Range.creates(m_start, m_end);
     }
 
 

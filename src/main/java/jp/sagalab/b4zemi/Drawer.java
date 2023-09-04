@@ -267,6 +267,7 @@ public class Drawer extends JPanel{
    * @param _evaluatePoints 評価点列
    */
   public void setEvaluatePoints(List<Point> _evaluatePoints) {
+
     m_evaluatePoints = _evaluatePoints;
 
   }
@@ -293,107 +294,21 @@ public class Drawer extends JPanel{
 
       @Override
       public void mouseReleased(MouseEvent e) {
-//        //時間の正規化
-//        List<Point> Time = new ArrayList<>(normalizePoints(Range.create(0.0, 1.0)));
-//
-//        //BのMatrixを求める
-//        double[][] elements = new double[Time.size()][];
-//        for (int i=0; i<=Time.size()-1; i++){
-//          elements[i] = BezierCurve.Brow(Time.get(i).time(), w1);
-//        }
-//        Matrix B = Matrix.create(elements);
-//        System.out.println(B);
-//        System.out.println(m_points);
-//        System.out.println(Time);
-//
-//        //Bの転置をします
-//        Matrix Btrans = B.transpose();
-//
-//        double[][] xy = new double[Time.size()][2];
-//        for (int i=0; i<=Time.size()-1; i++){
-//          xy[i][0] = m_points.get(i).getX();
-//          xy[i][1] = m_points.get(i).getY();
-//        }
-//
-//        //pをMatrixにする
-//        Matrix p = Matrix.create(xy);
-//
-//        System.out.println(p);
-//
-//        //Bの転置とBをかける
-//        Matrix a = Btrans.product(B);
-//        Matrix b = Btrans.product(p);
-//
-//        //制御点を求める
-//        Matrix x = a.solve(b);
-//        System.out.println(x);
-//
-//        //m_controlpointsに入れる
-//        Point point0  = Point.create(x.get(0,0), x.get(0, 1));
-//        Point point1  = Point.create(x.get(1,0), x.get(1, 1));
-//        Point point2  = Point.create(x.get(2,0), x.get(2, 1));
 
+        Search search = Search.create(m_points);
 
-        //規格化楕円弧モデル
-        //m_controlpointsに入れる
-        Point pointd0  = Point.create(0,0);
-        Point pointd1  = Point.create(0.5,0.5);
-        Point pointd2  = Point.create(1,0);
+        m_evaluatePoints = search.m_evaluatePoints;
 
-        m_controlPoints.clear();
+        m_controlPoints.add(0, search.m_controlPoints.get(0));
+        m_controlPoints.add(1, search.m_controlPoints.get(1));
+        m_controlPoints.add(2, search.m_controlPoints.get(2));
 
-        m_controlPoints.add(pointd0);
-        m_controlPoints.add(pointd1);
-        m_controlPoints.add(pointd2);
-
-        List<Point> t = new ArrayList<>(calculateT(m_points));
-
-        //BのMatrixを求める
-        double[][] elements = new double[t.size()][];
-        for (int i=0; i<=t.size()-1; i++){
-          elements[i] = BezierCurve.Brow(t.get(i).time(), w1);
+        for (int i=0; i<=m_evaluatePoints.size()-2; i++) {
+          drawLine(m_evaluatePoints.get(i), m_evaluatePoints.get(i + 1), Color.BLUE, getGraphics());
         }
-        Matrix B = Matrix.create(elements);
-        System.out.println(B);
-        System.out.println(m_points);
-        System.out.println(t);
-
-        //Bの転置をします
-        Matrix Btrans = B.transpose();
-
-        double[][] xy = new double[t.size()][2];
-        for (int i=0; i<=t.size()-1; i++){
-          xy[i][0] = m_points.get(i).getX();
-          xy[i][1] = m_points.get(i).getY();
+        for(int i=0; i < search.m_controlPoints.size(); i++) {
+          drawPoint(m_controlPoints.get(i), Color.ORANGE, getGraphics());
         }
-
-        //pをMatrixにする
-        Matrix p = Matrix.create(xy);
-
-        System.out.println(p);
-
-        //Bの転置とBをかける
-        Matrix a = Btrans.product(B);
-        Matrix b = Btrans.product(p);
-
-        //制御点を求める
-        Matrix x = a.solve(b);
-        System.out.println(x);
-
-        //m_controlpointsに入れる
-        Point point0  = Point.create(x.get(0,0), x.get(0, 1));
-        Point point1  = Point.create(x.get(1,0), x.get(1, 1));
-        Point point2  = Point.create(x.get(2,0), x.get(2, 1));
-
-        m_controlPoints.clear();
-
-        m_controlPoints.add(point0);
-        m_controlPoints.add(point1);
-        m_controlPoints.add(point2);
-
-        calculate();
-
-        repaint();
 
     }
 
@@ -451,7 +366,7 @@ public class Drawer extends JPanel{
    * 点列の時刻パラメータが0始まりになるように全体をシフトします.
    */
   public List<Point> shiftPointsTimeZero() {
-    return normalizePoints(Range.create(0, 1));
+    return normalizePoints(Range.creates(0, 1));
   }
 
   /**
