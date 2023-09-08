@@ -114,8 +114,13 @@ public class BezierCurve {
         double topx = (m_controlPoints.get(0).getX()*p0+m_controlPoints.get(1).getX()*p1*(_w1+1)+m_controlPoints.get(2).getX()*p2);
         double topy = (m_controlPoints.get(0).getY()*p0+m_controlPoints.get(1).getY()*p1*(_w1+1)+m_controlPoints.get(2).getY()*p2);
         double bottom = (p0+(_w1+1)*p1+p2);
-
+        if(topx/bottom==Double.POSITIVE_INFINITY) {
+            System.out.println("x:" + topx + " y:" + topy + " bottom:" + bottom);
+            System.out.println("p0:"+p0+" p1:"+p1+" p2:"+p2);
+            System.out.println("_t:"+_t);
+        }
         return Point.create(topx/bottom,topy/bottom);
+
 
 //        double x = m_controlPoints.get(0).getX() * bernstein(0, _t, getDegree()) +
 //                m_controlPoints.get(1).getX() * bernstein(1, _t, getDegree()) +
@@ -181,8 +186,8 @@ public class BezierCurve {
     }
 
     //(n,i)=nCi
-    public static int combination(int _i, int _degree){
-        return recursion(_degree)/(recursion(_i)*recursion(_degree - _i));
+    public static double combination(int _i, int _degree){
+        return recursion(_degree)/(double)(recursion(_i)*recursion(_degree - _i));
     }
 
     static double bernstein(int _i,double _t, int _degree){

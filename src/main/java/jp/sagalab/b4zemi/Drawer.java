@@ -26,7 +26,7 @@ public class Drawer extends JPanel{
    * @throws IllegalArgumentException 線の幅が0以下であった場合
    * @throws IllegalArgumentException 点の半径が0以下であった場合
    */
-    double w1 = Math.cos(Math.PI/2);
+//    double w1 = Math.cos(Math.PI/2);
 //  double w1 = 0;
   public static void create() {
     // インスタンス生成前に不正な値がないかチェックします．
@@ -167,7 +167,7 @@ public class Drawer extends JPanel{
     List<Point> evaluatelist2 = new ArrayList<>();
 
     for(double t=0; t<=1; t+=0.001) {
-      Point points = bezierCurve.evaluate(t,w1);
+      Point points = bezierCurve.evaluate(t,Point.getW());
       evaluatelist.add(points);
     }
 
@@ -175,7 +175,7 @@ public class Drawer extends JPanel{
     setEvaluatePoints(evaluatelist);
 
     for(double t=0; t<=1; t+=0.001) {
-      Point points2 = bezierCurve.evaluate(t,-w1);
+      Point points2 = bezierCurve.evaluate(t,Point.getW());
       evaluatelist2.add(points2);
     }
     setEvaluatePoints2(evaluatelist2);
@@ -190,7 +190,7 @@ public class Drawer extends JPanel{
 
     //規格化楕円弧モデルの有理二次ベジェ曲線を計算
     for(double t=0; t<=1; t+=0.001) {
-      Point points = bezierCurve.evaluate(t,w1);
+      Point points = bezierCurve.evaluate(t,Point.getW());
       evaluatelist.add(points);
     }
     //規格化楕円弧モデルの距離パラメータを計算
@@ -298,21 +298,16 @@ public class Drawer extends JPanel{
         Search search = Search.create(m_points);
 
 //        m_evaluatePoints = search.m_evaluatePoints;
+        m_controlPoints.clear();
 
-        m_controlPoints.add(0, search.m_controlPoints.get(0));
-        m_controlPoints.add(1, search.m_controlPoints.get(1));
-        m_controlPoints.add(2, search.m_controlPoints.get(2));
+        m_controlPoints.add(search.m_controlPoints.get(0));
+        m_controlPoints.add(search.m_controlPoints.get(1));
+        m_controlPoints.add(search.m_controlPoints.get(2));
 
         //求めた制御点からBezier曲線の評価点を求めていて、m_evaluatePointsにその評価点の値が入る
         calculate();
 
-        for (int i=0; i<=m_evaluatePoints.size()-2; i++) {
-          drawLine(m_evaluatePoints.get(i), m_evaluatePoints.get(i + 1), Color.BLUE, getGraphics());
-        }
-        for(int i=0; i < search.m_controlPoints.size(); i++) {
-          drawPoint(m_controlPoints.get(i), Color.ORANGE, getGraphics());
-        }
-
+        repaint();
     }
 
       @Override
