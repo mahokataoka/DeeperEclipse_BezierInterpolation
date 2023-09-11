@@ -118,6 +118,7 @@ public class BezierCurve {
             System.out.println("x:" + topx + " y:" + topy + " bottom:" + bottom);
             System.out.println("p0:"+p0+" p1:"+p1+" p2:"+p2);
             System.out.println("_t:"+_t);
+            System.out.println("w:"+Point.getW());
         }
         return Point.create(topx/bottom,topy/bottom);
 

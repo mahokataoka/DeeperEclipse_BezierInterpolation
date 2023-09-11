@@ -29,8 +29,8 @@ public class Search implements NelderMead.ObjectiveFunction {
 
         double[] search = NelderMead.search(createRange(), 0.01, 1000, this::calc);
 
-        double w = 2 / ( 1 + Math.exp(-search[2]) ) - 1;
-        System.out.println("x:"+search[0]+" y:"+search[1]+" w:"+ w + " x"+ search[2]);
+        Point.setW(2 / ( 1 + Math.exp(-search[2]) ) - 1);
+        System.out.println("far_x:"+search[0]+" far_y:"+search[1]+" w:"+ Point.getW() + " sig_x"+ search[2]);
 
         //最遠点
         Point farPoint = Point.create(search[0], search[1]);
@@ -41,7 +41,6 @@ public class Search implements NelderMead.ObjectiveFunction {
         fPoints.add(farPoint);
         fPoints.add(Point.create(1,0));
 
-        Point.setW(2 / ( 1 + Math.exp(-search[2]) ) - 1);
 
         m_controlPoints.clear();
 
@@ -106,6 +105,7 @@ public class Search implements NelderMead.ObjectiveFunction {
         fPoints.add(Point.create(1.0,0));
 
         Point.setW( 2 / ( 1 + Math.exp(-values[2]) ) - 1 );
+        System.out.println("values:"+values[2]);
 
         m_controlPoints.clear();
 
@@ -166,7 +166,7 @@ public class Search implements NelderMead.ObjectiveFunction {
         range[0] = Range.create(-10, 10);
         //最遠点のy座標の定義域
         range[1] = Range.create(-10, 10);
-        //重みwの定義域
+        //重みwの定義域(シグモイドのxの定義域)
         range[2] = Range.create(-5, 5);
 
         return range;
