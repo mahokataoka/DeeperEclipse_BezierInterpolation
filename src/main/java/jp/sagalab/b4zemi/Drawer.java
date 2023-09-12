@@ -167,7 +167,7 @@ public class Drawer extends JPanel{
     List<Point> evaluatelist2 = new ArrayList<>();
 
     for(double t=0; t<=1; t+=0.001) {
-      Point points = bezierCurve.evaluate(t,Point.getW());
+      Point points = bezierCurve.evaluate(t,m_w);
       evaluatelist.add(points);
     }
 
@@ -175,90 +175,12 @@ public class Drawer extends JPanel{
     setEvaluatePoints(evaluatelist);
 
     for(double t=0; t<=1; t+=0.001) {
-      Point points2 = bezierCurve.evaluate(t,Point.getW());
+      Point points2 = bezierCurve.evaluate(t,m_w);
       evaluatelist2.add(points2);
     }
     setEvaluatePoints2(evaluatelist2);
   }
 
-
-  //規格化楕円弧モデルからパラメータに対する距離の値を出す
-  public List<Point> calculateT(List<Point> m_points){
-
-    BezierCurve bezierCurve = BezierCurve.create(m_controlPoints);
-    List<Point> evaluatelist = new ArrayList<>();
-
-    //規格化楕円弧モデルの有理二次ベジェ曲線を計算
-    for(double t=0; t<=1; t+=0.001) {
-      Point points = bezierCurve.evaluate(t,Point.getW());
-      evaluatelist.add(points);
-    }
-    //規格化楕円弧モデルの距離パラメータを計算
-    List<Double> distancelist = new ArrayList<>();  //距離が入っている、要素番号がt
-    double distanceLength=0;
-    distancelist.add(0.0);
-    for(int i=0; i<evaluatelist.size()-1; i++){
-      double x = evaluatelist.get(i+1).getX()-evaluatelist.get(i).getX();
-      double y = evaluatelist.get(i+1).getY()-evaluatelist.get(i).getY();
-      distanceLength += Math.sqrt( x*x + y*y );
-      distancelist.add(distanceLength);
-    }
-
-    //規格化楕円弧モデルから求めた距離パラメータを全長が1になるように規格化
-    for(int i=0; i<distancelist.size(); i++){
-      if(i==0){
-      }
-      distancelist.set(i,distancelist.get(i)/distanceLength);
-    }
-
-    //入力点列の距離パラメータを計算
-    List<Double> distanceT = new ArrayList<>();
-    distanceT.add(0.0);
-    double d = 0;
-    List<Double> dList = new ArrayList<>();
-//    dList.add(0.0);
-    //入力点列の距離を計算する
-    for (int i=0; i<m_points.size()-1; i++) {
-      double x = m_points.get(i + 1).getX() - m_points.get(i).getX();
-      double y = m_points.get(i + 1).getY() - m_points.get(i).getY();
-      d += Math.sqrt(x * x + y * y);
-      dList.add(d);
-    }
-    //全長を1に規格化
-    for(int i=0; i<dList.size(); i++){
-      if(dList.get(i)==0){
-      }
-      dList.set(i,dList.get(i)/d);
-    }
-
-    //規格化楕円弧モデルと入力点列の距離を比較
-    for (int i=0; i<dList.size(); i++) {
-      for (int j = 1; j < distancelist.size(); j++) {
-        if (dList.get(i) >= distancelist.get(j-1) && dList.get(i) < distancelist.get(j)) {
-          //線分abをm:nに内分する
-          double m = dList.get(i)-distancelist.get(j-1);
-          double n = distancelist.get(j)-dList.get(i);
-          double t = (n * (j-1)/999 + m * j/999) / (m + n);
-          distanceT.add(t);
-          break;
-        }else if(dList.get(i) == distancelist.get(j)){
-          distanceT.add(1.0);
-          break;
-        }
-      }
-    }
-
-      List<Point> points = new ArrayList<>();
-
-      for (int i=0;i<m_points.size()-1;i++) {
-        points.add(Point.createXYT(m_points.get(i).getX(), m_points.get(i).getY(), distanceT.get(i)));
-      }
-
-    System.out.println(dList);
-    System.out.println(points);
-
-    return points;
-  }
 
 
 
@@ -303,6 +225,7 @@ public class Drawer extends JPanel{
         m_controlPoints.add(search.m_controlPoints.get(0));
         m_controlPoints.add(search.m_controlPoints.get(1));
         m_controlPoints.add(search.m_controlPoints.get(2));
+        m_w = search.m_w;
 
         //求めた制御点からBezier曲線の評価点を求めていて、m_evaluatePointsにその評価点の値が入る
         calculate();
@@ -435,4 +358,6 @@ public class Drawer extends JPanel{
 
   /** ドラッグで打たれた点列を保持するリスト */
   private List<Point> m_points = new ArrayList<>();
+
+  private double m_w;
 }
