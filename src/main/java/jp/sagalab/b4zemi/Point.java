@@ -72,7 +72,14 @@ public class Point {
         return m_t;
     }
     public static void setW(double _w){
-        m_w = _w;
+        if(_w==1){
+            m_w = _w -0.00001;
+        }else if(_w==-1){
+            m_w = _w + 0.00001;
+        }else{
+            m_w = _w;
+        }
+
     }
     public static double getW(){
         return m_w;

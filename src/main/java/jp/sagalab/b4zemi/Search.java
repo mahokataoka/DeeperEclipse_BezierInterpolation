@@ -105,7 +105,6 @@ public class Search implements NelderMead.ObjectiveFunction {
         fPoints.add(Point.create(1.0,0));
 
         Point.setW( 2 / ( 1 + Math.exp(-values[2]) ) - 1 );
-        System.out.println("values:"+values[2]);
 
         m_controlPoints.clear();
 
