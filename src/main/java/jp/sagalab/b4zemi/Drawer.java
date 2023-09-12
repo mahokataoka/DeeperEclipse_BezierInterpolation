@@ -358,6 +358,6 @@ public class Drawer extends JPanel{
 
   /** ドラッグで打たれた点列を保持するリスト */
   private List<Point> m_points = new ArrayList<>();
-
+  /** 重み　*/
   private double m_w;
 }

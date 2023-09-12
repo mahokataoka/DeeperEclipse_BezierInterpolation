@@ -281,5 +281,6 @@ public class Search implements NelderMead.ObjectiveFunction {
     /** 評価点列 */
     public List<Point> m_evaluatePoints = new ArrayList<>();
 
+    /** 重み　*/
     public double m_w;
 }
