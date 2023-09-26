@@ -52,6 +52,7 @@ public class Drawer extends JPanel{
     Drawer drawer = new Drawer();
     // 先程生成したウィンドウの中の要素としてDrawerを追加します．
     frame.getContentPane().add(drawer);
+
     // フレームサイズを最適化します．
     frame.pack();
     // ウィンドウを表示します．
