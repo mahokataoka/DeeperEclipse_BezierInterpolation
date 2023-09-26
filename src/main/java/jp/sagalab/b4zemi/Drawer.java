@@ -53,6 +53,21 @@ public class Drawer extends JPanel{
     // 先程生成したウィンドウの中の要素としてDrawerを追加します．
     frame.getContentPane().add(drawer);
 
+    //入力点列の座標とパラメータ情報を保存、読み出しするボタンの追加
+    JTextField textField = new JTextField("output/points.csv");
+    frame.getContentPane().add(textField, BorderLayout.NORTH);
+    JPanel bottom = new JPanel();
+    JButton saveEnterPoints = new JButton("入力点の保存");
+    saveEnterPoints.addActionListener((e) -> drawer.saveEnterPoints());
+    bottom.add(saveEnterPoints);
+    JButton saveEvaluatePoints = new JButton("評価点の保存");
+    saveEvaluatePoints.addActionListener((e) -> drawer.saveEvaluatePoints());
+    bottom.add(saveEvaluatePoints);
+    JButton load = new JButton("よみだし");
+    load.addActionListener((e) -> drawer.load(textField.getText()));
+    bottom.add(load);
+    frame.getContentPane().add(bottom, BorderLayout.SOUTH);
+
     // フレームサイズを最適化します．
     frame.pack();
     // ウィンドウを表示します．
@@ -166,14 +181,18 @@ public class Drawer extends JPanel{
     BezierCurve bezierCurve = BezierCurve.create(m_controlPoints);
     List<Point> evaluatelist = new ArrayList<>();
     List<Point> evaluatelist2 = new ArrayList<>();
+    List<Point> evaluatelistXYT = new ArrayList<>();
 
     for(double t=0; t<=1; t+=0.001) {
       Point points = bezierCurve.evaluate(t,m_w);
       evaluatelist.add(points);
+      Point pointXYT = Point.createXYT(points.getX(), points.getY(), t);
+      evaluatelistXYT.add(pointXYT);
     }
 
     // 求めた評価点列をm_evaluatePointsに設定します．
     setEvaluatePoints(evaluatelist);
+    setEvaluatePointsXYT(evaluatelistXYT);
 
     for(double t=0; t<=1; t+=0.001) {
       Point points2 = bezierCurve.evaluate(t,m_w);
@@ -198,6 +217,37 @@ public class Drawer extends JPanel{
     m_evaluatePoints2 = _evaluatePoints2;
   }
 
+
+  public void setEvaluatePointsXYT(List<Point> _evaluatePointsXYT){
+    m_evaluatePointsXYT = _evaluatePointsXYT;
+  }
+
+  /**
+   * 入力点列の保存
+   */
+  public void saveEnterPoints() {
+    Utility.saveEnterPoints(m_points);
+  }
+  /**
+   * 評価点列の保存
+   */
+  public void saveEvaluatePoints() {
+    Utility.saveEvaluatePoints(m_evaluatePointsXYT);
+  }
+
+
+  /**
+   * 点列の読み出し
+   * @param fileName ファイル名
+   */
+  public void load(String fileName) {
+    m_points.clear();
+    m_points.addAll(Utility.loadPoints(fileName));
+//    createFSC();
+    repaint();
+  }
+
+
   /**
    * コンストラクタ
    */
@@ -220,7 +270,6 @@ public class Drawer extends JPanel{
 
         Search search = Search.create(m_points);
 
-//        m_evaluatePoints = search.m_evaluatePoints;
         m_controlPoints.clear();
 
         m_controlPoints.add(search.m_controlPoints.get(0));
@@ -237,27 +286,6 @@ public class Drawer extends JPanel{
       @Override
       //マウスをクリックしたときの処理(MouseAdapterクラスにあるmouseClickedメソッドをオーバーライドしている)
       public void mouseClicked(MouseEvent e) {
-        // スーパークラスであるMouseAdapterクラスにあるmouseClickedメソッドを呼び出します．
-        //ただし今回の場合は，MouseAdapterクラスにあるmouseClickedメソッドは処理の中身が書かれていないため呼び出す必要はないが，
-        //慣例として記載しています．
-//        super.mouseClicked(e);
-        /*
-          ここにマウスをクリックしたときの処理を記述する．
-         */
-
-
-
-//        Point q = Point.create(e.getX(),e.getY());
-//        m_controlPoints.add(q);
-//
-//        if(m_controlPoints.size()>=3){
-//          calculate();
-//        }
-//        inputPoints.add(q);
-//        System.out.println(inputPoints.get(0));
-
-
-//        drawPoint( e.getX() , e.getY() , Color.red , g);
 
         // repaintメソッドを用いてpaintメソッドを呼び出す
         repaint();
@@ -274,12 +302,6 @@ public class Drawer extends JPanel{
                 Point point = Point.createXYT(e.getX(), e.getY(),System.currentTimeMillis() * 0.001);
                 m_points.add(point);
                 drawPoint(point,Color.BLACK,getGraphics());
-
-
-//                for(int i=0;i<m_points.size()-1;i++){
-//                  System.out.println(m_points.get(i));
-//                }
-
               }
             }
     );
@@ -355,6 +377,7 @@ public class Drawer extends JPanel{
   /** 評価点列 */
   private List<Point> m_evaluatePoints = new ArrayList<>();
   private List<Point> m_evaluatePoints2 =new ArrayList<>();
+  private List<Point> m_evaluatePointsXYT = new ArrayList<>();
 
 
   /** ドラッグで打たれた点列を保持するリスト */

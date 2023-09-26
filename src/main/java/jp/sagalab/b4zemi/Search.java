@@ -153,12 +153,6 @@ public class Search implements NelderMead.ObjectiveFunction {
         Matrix Ndptrans = Ndp.transpose();
         Matrix NdpSquare = Ndptrans.product(Ndp);
         error = NdpSquare.get(0,0) + NdpSquare.get(1,1);
-//        error = Math.pow(Ndp.get(0,0),  2);
-//        for(int i=0; i<Ndp.rowSize(); i++){
-//            for(int j=0; j< Nd.columnSize(); j++){
-//                error += Math.pow(Ndp.get(i,j),  2);
-//            }
-//        }
 
         return error;
 
@@ -252,7 +246,6 @@ public class Search implements NelderMead.ObjectiveFunction {
         for (int i=0;i<_points.size()-2;i++) {
             points.add(Point.createXYT(_points.get(i).getX(), _points.get(i).getY(), distanceT.get(i)));
         }
-        System.out.println(distanceT);
         return points;
     }
 
