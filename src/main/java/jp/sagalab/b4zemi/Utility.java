@@ -1,6 +1,8 @@
 package jp.sagalab.b4zemi;
 
 import com.panayotis.gnuplot.JavaPlot;
+import com.panayotis.gnuplot.style.PlotStyle;
+import com.panayotis.gnuplot.style.Style;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,6 +62,8 @@ public class Utility {
         }
 
         javaplot.addPlot(graph);
+        javaplot.set("xlabel","'parameter'");
+        javaplot.set("ylabel","'distance'");
         javaplot.plot();
 
     }
