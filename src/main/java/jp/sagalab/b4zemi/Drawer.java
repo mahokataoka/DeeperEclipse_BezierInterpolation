@@ -75,11 +75,6 @@ public class Drawer extends JPanel{
     frame.setVisible(true);
   }
 
-//  @Override
-//  public void paintComponent(Graphics g) {
-//    super.paintComponent(g);
-//    drawPoint(100,100,Color.BLACK,g);
-//  }
 
   /**
    * パネルに描画を行います．
@@ -356,15 +351,7 @@ public class Drawer extends JPanel{
 
     return points;
   }
-//  @Override
-//  public void paintComponent(Graphics g) {
-//    super.paintComponent(g);
-////    Point point = Point.create(0,0);
-//    drawPoint(point,Color.BLACK,g);
-//    System.out.println("paint");
-//  }
-//  Point point = Point.create(0,0);
-//  List<Point> inputPoints  = new ArrayList<>();
+
 
   /** 描画パネルの横幅 */
   private static final int WIDTH_SIZE = 800;
