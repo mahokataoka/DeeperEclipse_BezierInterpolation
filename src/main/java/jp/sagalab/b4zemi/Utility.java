@@ -11,13 +11,12 @@ import java.util.Scanner;
 public class Utility {
     //入力点をcsv形式で保存する
     public static void saveEnterPoints(List<Point> m_points){
-        File output = new File("output");
+        File output = new File("outputEnterpoints");
         if(!output.exists()){
             output.mkdir();
         }
         try {
-            PrintWriter pw = new PrintWriter(new File(output, "points_" + System.currentTimeMillis() + ".csv"));
-            pw.println("入力点の出力");
+            PrintWriter pw = new PrintWriter(new File(output, "enterpoints_" + System.currentTimeMillis() + ".csv"));
             for(Point p : m_points){
                 pw.print(p.getX());
                 pw.print(",");
@@ -32,14 +31,13 @@ public class Utility {
     }
     //評価点をcsv形式で保存する
     public static void saveEvaluatePoints(List<Point> _points){
-        File output = new File("output");
+        File output = new File("outputEvaluatepoints");
         if(!output.exists()){
             output.mkdir();
         }
         List<Double> distanceList = calcDistance(_points);
         try {
-            PrintWriter pw = new PrintWriter(new File(output, "points_" + System.currentTimeMillis() + ".csv"));
-            pw.println("評価点の出力");
+            PrintWriter pw = new PrintWriter(new File(output, "evaluatepoints_" + System.currentTimeMillis() + ".csv"));
             for(int i=0; i< _points.size(); i++){
                 pw.print(distanceList.get(i));
                 pw.print(",");
