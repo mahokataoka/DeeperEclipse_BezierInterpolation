@@ -13,6 +13,9 @@ dependencies {
     implementation project(":jftk")
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    // https://mvnrepository.com/artifact/com.panayotis/javaplot
+    implementation group: 'com.panayotis', name: 'javaplot', version: '0.5.0'
+
 }
 
 test {

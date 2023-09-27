@@ -1,6 +1,6 @@
 package jp.sagalab.b4zemi;
 
-import jp.sagalab.jftk.optimizer.NelderMead;
+import com.panayotis.gnuplot.JavaPlot;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +26,7 @@ public class Drawer extends JPanel{
    * @throws IllegalArgumentException 線の幅が0以下であった場合
    * @throws IllegalArgumentException 点の半径が0以下であった場合
    */
+
 //    double w1 = Math.cos(Math.PI/2);
 //  double w1 = 0;
   public static void create() {
@@ -90,6 +91,7 @@ public class Drawer extends JPanel{
   public void paint(Graphics _g) {
     super.paint(_g);
     // 描画処理を記述する．
+
 
     /*
       制御点列のリストに制御点が入っている場合は描画を行うような処理を記述する．

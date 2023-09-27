@@ -1,5 +1,7 @@
 package jp.sagalab.b4zemi;
 
+import com.panayotis.gnuplot.JavaPlot;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -47,6 +49,19 @@ public class Utility {
         } catch (IOException ignore){
 
         }
+
+        JavaPlot javaplot = new JavaPlot();
+
+        double[][] graph = new double[distanceList.size()][2];
+
+        for (int i=0; i<=distanceList.size()-1; i++){
+            graph[i][0] = _points.get(i).time();
+            graph[i][1] = distanceList.get(i);
+        }
+
+        javaplot.addPlot(graph);
+        javaplot.plot();
+
     }
 
 
