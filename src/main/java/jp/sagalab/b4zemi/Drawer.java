@@ -55,7 +55,7 @@ public class Drawer extends JPanel{
     frame.getContentPane().add(drawer);
 
     //入力点列の座標とパラメータ情報を保存、読み出しするボタンの追加
-    JTextField textField = new JTextField("output/points.csv");
+    JTextField textField = new JTextField("outputEnterpoints/points.csv");
     frame.getContentPane().add(textField, BorderLayout.NORTH);
     JPanel bottom = new JPanel();
     JButton saveEnterPoints = new JButton("入力点の保存");
@@ -243,10 +243,44 @@ public class Drawer extends JPanel{
    * @param fileName ファイル名
    */
   public void load(String fileName) {
+
     m_points.clear();
-    m_points.addAll(Utility.loadPoints(fileName));
+    m_points.addAll(Utility.
+            loadPoints(fileName));
 //    createFSC();
+
     repaint();
+
+    Search search = Search.create(m_points);
+
+    m_controlPoints.clear();
+
+    m_controlPoints.add(search.m_controlPoints.get(0));
+    m_controlPoints.add(search.m_controlPoints.get(1));
+    m_controlPoints.add(search.m_controlPoints.get(2));
+    m_w = search.m_w;
+
+    //求めた制御点からBezier曲線の評価点を求めていて、m_evaluatePointsにその評価点の値が入る
+    calculate();
+
+    repaint();
+//
+//    List<Double> distanceList = Utility.calcDistance(_points);
+//    JavaPlot javaplot = new JavaPlot();
+//
+//    double[][] graph = new double[distanceList.size()][2];
+//
+//    for (int i=0; i<=distanceList.size()-1; i++){
+//      graph[i][0] = _points.get(i).time();
+//      graph[i][1] = distanceList.get(i);
+//    }
+//
+//    javaplot.addPlot(graph);
+//    javaplot.set("xlabel","'parameter'");
+//    javaplot.set("ylabel","'distance'");
+//    javaplot.plot();
+
+
   }
 
 
@@ -272,6 +306,8 @@ public class Drawer extends JPanel{
 
         Search search = Search.create(m_points);
 
+        repaint();
+
         m_controlPoints.clear();
 
         m_controlPoints.add(search.m_controlPoints.get(0));
@@ -291,6 +327,7 @@ public class Drawer extends JPanel{
 
         // repaintメソッドを用いてpaintメソッドを呼び出す
         repaint();
+
 
       }
 

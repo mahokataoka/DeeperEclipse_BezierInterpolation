@@ -189,7 +189,7 @@ public class Search implements NelderMead.ObjectiveFunction {
         //規格化楕円弧モデルの距離パラメータを計算
         List<Double> distanceNEAlist = new ArrayList<>();
         double distanceNEALength=0;
-//        distanceNEAlist.add(0.0);
+        distanceNEAlist.add(0.0);
         for(int i=0; i<evaluateNEAList.size()-1; i++){
             double x = evaluateNEAList.get(i+1).getX()-evaluateNEAList.get(i).getX();
             double y = evaluateNEAList.get(i+1).getY()-evaluateNEAList.get(i).getY();
@@ -210,7 +210,7 @@ public class Search implements NelderMead.ObjectiveFunction {
         double d = 0;
         //入力点列の距離を計算する
         List<Double> dList = new ArrayList<>();
-//        dList.add(0.0);
+        dList.add(0.0);
         for (int i=0; i<_points.size()-1; i++) {
             double x = _points.get(i + 1).getX() - _points.get(i).getX();
             double y = _points.get(i + 1).getY() - _points.get(i).getY();
@@ -228,7 +228,7 @@ public class Search implements NelderMead.ObjectiveFunction {
         for (int i=0; i<dList.size(); i++) {
             for (int j = 1; j < distanceNEAlist.size(); j++) {
                 if (dList.get(i) >= distanceNEAlist.get(j-1) && dList.get(i) < distanceNEAlist.get(j)) {
-                    //線分abをm:nに内分する
+                    //m:nに内分する
                     double m = dList.get(i)-distanceNEAlist.get(j-1);
                     double n = distanceNEAlist.get(j)-dList.get(i);
                     double t = (n * (j-1)/999 + m * j/999) / (m + n);
