@@ -8,24 +8,7 @@ import java.util.List;
  * @author yusa
  */
 public class BezierCurve {
-    //フィールド 制御点列
-    /**
-     * Bezier曲線を生成します。
-     * @param _controlPoints 制御点列
-     * @return Bezier曲線
-     */
 
-    /** 制御点列 */
-    private final List<Point> m_controlPoints;
-
-    /**
-     * 制御点列を指定してBezier曲線オブジェクトを生成するコンストラクタ
-     * @param _controlPoints 制御点列
-     */
-    private BezierCurve(List<Point> _controlPoints){
-
-        m_controlPoints = _controlPoints;
-    }
 
     /**
      * Bezier曲線の生成を行うためのstaticファクトリーメソッド
@@ -56,90 +39,113 @@ public class BezierCurve {
 
         return getControlPoints().size() - 1;
     }
+    public Point evaluate(double _t,double _w1) {
+        double p0 = bernstein(0, _t, getDegree()) - bernstein(1, _t, getDegree()) / 2;
+        double p1 = bernstein(1, _t, getDegree());
+        double p2 = bernstein(2, _t, getDegree()) - bernstein(1, _t, getDegree()) / 2;
 
-    /**
-     * //evaluate パラメータ t に対応する評価点を De Casteljau のアルゴリズムで評価するメソッドです。
-     * @param _t 閉区間 [ 0, 1 ] 内のパラメータ
-     * @return パラメータ t に対応する評価点
-     */
+        double topx = (m_controlPoints.get(0).getX() * p0 + m_controlPoints.get(1).getX() * p1 * (_w1 + 1) + m_controlPoints.get(2).getX() * p2);
+        double topy = (m_controlPoints.get(0).getY() * p0 + m_controlPoints.get(1).getY() * p1 * (_w1 + 1) + m_controlPoints.get(2).getY() * p2);
+        double bottom = (p0 + (_w1 + 1) * p1 + p2);
 
-//    public Point evaluate(double _t){
-//
-//        List<Point> bezierPoints  = new ArrayList<Point>();
-//
-//        if(m_controlPoints.size() == 1){
-//            return m_controlPoints.get(0);
-//        }
-//        for(int i = 0;i < getDegree();i++){
-//            bezierPoints.add(m_controlPoints.get(i).divide(m_controlPoints.get(i+1),_t));
-//        }
-//        BezierCurve b = BezierCurve.create(bezierPoints);
-//        return b.evaluate(_t);
-//
-//    }
-    //Bernstein 多項式表現
+        return Point.create(topx / bottom, topy / bottom);
+    }
 
-//    public Point evaluate(double _t){
-//        double sumx = 0;
-//        double sumy = 0;
-//
-//        for(int i=0;i<=getDegree();i++){
-//
-//            sumx += m_controlPoints.get(i).getX()*bernstein(i,_t);
-//            sumy += m_controlPoints.get(i).getY()*bernstein(i,_t);
-//
-//        }
-//        return Point.create(sumx,sumy);
-//
-//    }
-//    public  Point evaluate(double _t,double _w1){
-//        double w0 = 1;
-//        double w2 = 1;
-//        double topx = 0;
-//        double topy = 0;
-//        double bottom = 0;
-//
-//        topx = (w0*m_controlPoints.get(0).getX()*bernstein(0,_t))+(_w1*m_controlPoints.get(1).getX()*bernstein(1,_t))+(w2*m_controlPoints.get(2).getX()*bernstein(2,_t));
-//        topy = (w0*m_controlPoints.get(0).getY()*bernstein(0,_t))+(_w1*m_controlPoints.get(1).getY()*bernstein(1,_t))+(w2*m_controlPoints.get(2).getY()*bernstein(2,_t));
-//        bottom = (w0*bernstein(0,_t))+(_w1*bernstein(1,_t))+(w2*bernstein(2,_t));
-//
-//        return Point.create(topx/bottom,topy/bottom);
-//
-//    }
-    public Point evaluate(double _t,double _w1){
-        double p0 = bernstein(0,_t, getDegree())-bernstein(1,_t, getDegree())/2;
-        double p1 = bernstein(1,_t, getDegree());
-        double p2 = bernstein(2,_t, getDegree())-bernstein(1,_t, getDegree())/2;
+    //-1<w<0のときに呼び出されるメソッド
+    Point evaluateEx(double _t, double _w){
+        double paramaterSe = parameterEx(_w);
+        List<Double> q = new ArrayList<>();
 
-        double topx = (m_controlPoints.get(0).getX()*p0+m_controlPoints.get(1).getX()*p1*(_w1+1)+m_controlPoints.get(2).getX()*p2);
-        double topy = (m_controlPoints.get(0).getY()*p0+m_controlPoints.get(1).getY()*p1*(_w1+1)+m_controlPoints.get(2).getY()*p2);
-        double bottom = (p0+(_w1+1)*p1+p2);
-//        if(topx/bottom==Double.POSITIVE_INFINITY) {
-//            System.out.println("x:" + topx + " y:" + topy + " bottom:" + bottom);
-//            System.out.println("p0:"+p0+" p1:"+p1+" p2:"+p2);
-//            System.out.println("_t:"+_t);
-//            System.out.println("w:"+Point.getW());
-//        }
-        return Point.create(topx/bottom,topy/bottom);
+        if(_t>=0 && _t<1/(2-paramaterSe)){
+            q = basisfuncThreequqrters(_t,paramaterSe);
+        }
+        if(_t>1/(2-paramaterSe) && _t<=1){
+            q = basisfuncRound(_t,paramaterSe);
+        }
 
+        double x_top = q.get(0)*m_controlPoints.get(0).getX() + q.get(1)*m_controlPoints.get(1).getX() + q.get(2)*m_controlPoints.get(2).getX();
+        double y_top = q.get(0)*m_controlPoints.get(0).getY() + q.get(1)*m_controlPoints.get(1).getY() + q.get(2)*m_controlPoints.get(2).getY();
+        double bottom = q.get(3);
 
-//        double x = m_controlPoints.get(0).getX() * bernstein(0, _t, getDegree()) +
-//                m_controlPoints.get(1).getX() * bernstein(1, _t, getDegree()) +
-//                m_controlPoints.get(2).getX() * bernstein(2, _t, getDegree());
-//
-//        double y= m_controlPoints.get(0).getY() * bernstein(0, _t, getDegree()) +
-//                m_controlPoints.get(1).getY() * bernstein(1, _t, getDegree()) +
-//                m_controlPoints.get(2).getY() * bernstein(2, _t, getDegree());
-//
-//        return Point.create(x, y);
+        return Point.create(x_top/bottom,y_top/bottom);
     }
 
 
-    public static double[] Brow(double _t, double _w1){
+    List<Double> basisfuncThreequqrters(double _t, double _Se){
+        List<Double> q = new ArrayList<>();
+        List<Double> p = p((2-_Se)*_t);
 
-        double p0 = bernstein(0,_t, 2)-bernstein(1,_t, 2)/2;
-        double p1 = bernstein(1,_t, 2);
-        double p2 = bernstein(2,_t, 2)-bernstein(1,_t, 2)/2;
+        q.add(0,p.get(0));
+        q.add(1,p.get(1));
+        q.add(2,p.get(2));
+
+        q.add(p.get(0)+p.get(1)+p.get(2));
+
+        return q;
+    }
+
+    List<Double> basisfuncRound(double _t, double _Se){
+        List<Double> q = new ArrayList<>();
+        List<Double> p = p((2-_Se)*_t -1);
+
+        q.add(0,p.get(2) + p.get(1));
+        q.add(1,-1* p.get(1));
+        q.add(2,p.get(0) + p.get(1));
+
+        q.add(p.get(0)+p.get(1)+p.get(2));
+
+        return q;
+    }
+
+    //Seを求める
+    double parameterEx(double _w){
+        double denominator = _w*Math.sqrt(1+_w)*Math.sqrt(1-_w) + _w*_w -1;
+        double numerator = 2*_w*Math.sqrt(1+_w)*Math.sqrt(1-_w) -1;
+
+        return denominator/numerator;
+    }
+
+    //Pを計算
+    List<Double> p(double _t){
+        List<Double> p = new ArrayList<>();
+        List<Double> b = new ArrayList<>();
+
+        for(int i = 0; i<=getDegree(); i++) {
+            //Bをもとめる
+            long first = factorial(getDegree()) / (factorial(i) * factorial(getDegree()-i));
+            double second = Math.pow(_t, i);
+            double third = Math.pow(1 - _t, getDegree()-i);
+            //重みB
+            b.add(first * second * third);
+        }
+
+        p.add(0,b.get(0) - b.get(1)/2);
+        p.add(1,b.get(1));
+        p.add(2,b.get(2) - b.get(1)/2);
+
+        return p;
+    }
+
+
+    /**
+     * 階乗の計算
+     */
+    long factorial (int _x){
+        if(_x==0){
+            return 1;
+        }
+
+        long y = 1;
+        for(int i=_x; i>=1; i--){
+            y*=i;
+        }
+        return y;
+    }
+
+    public static double[] Brow(double _t, double _w1){
+        double p0 = bernstein(0, _t, 2) - bernstein(1, _t, 2) / 2;
+        double p1 = bernstein(1, _t, 2);
+        double p2 = bernstein(2, _t, 2) - bernstein(1, _t, 2) / 2;
 
         double Brow[] = new double[3];
 
@@ -151,27 +157,25 @@ public class BezierCurve {
         Brow[1] = twocol;
         Brow[2] = threecol;
 
-//        Brow[0] = bernstein(0, _t, 2);
-//        Brow[1] = bernstein(1, _t, 2);
-//        Brow[2] = bernstein(2, _t, 2);
-
-        return Brow;
-
-    }
-
-    //fにかける部分のみの基底関数
-    public static double[] rowf(double _t, double _w1){
-        double p0 = bernstein(0,_t, 2)-bernstein(1,_t, 2)/2;
-        double p1 = bernstein(1,_t, 2);
-        double p2 = bernstein(2,_t, 2)-bernstein(1,_t, 2)/2;
-
-        double Brow[] = new double[1];
-        double twocol = ((_w1 + 1) * p1) / (p0 + (_w1 + 1) * p1 + p2);
-        Brow[0] = twocol;
-
         return Brow;
     }
 
+    //w<0
+    public double[] Qrow(double _t, double _w){
+        double paramaterSe = parameterEx(_w);
+        double Qrow[] = new double[3];
+        List<Double> q = new ArrayList<>();
+        if(_t>=0 && _t<1/(2-paramaterSe)){
+            q = basisfuncThreequqrters(_t,paramaterSe);
+        }
+        if(_t>1/(2-paramaterSe) && _t<=1) {
+            q = basisfuncRound(_t, paramaterSe);
+        }
+            Qrow[0] = q.get(0)/q.get(3);
+            Qrow[1] = q.get(1)/q.get(3);
+            Qrow[2] = q.get(2)/q.get(3);
+        return Qrow;
+    }
 
 
     //階乗
@@ -195,4 +199,13 @@ public class BezierCurve {
         return (combination(_i, _degree)*Math.pow(_t,_i)*Math.pow((1-_t),_degree - _i));
     }
 
+    /**
+     * 制御点列を指定してBezier曲線オブジェクトを生成するコンストラクタ
+     * @param _controlPoints 制御点列
+     */
+    private BezierCurve(List<Point> _controlPoints){
+        m_controlPoints = _controlPoints;
+    }
+    /** 制御点列 */
+    private final List<Point> m_controlPoints;
 }

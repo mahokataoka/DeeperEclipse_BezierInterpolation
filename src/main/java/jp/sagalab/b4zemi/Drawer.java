@@ -55,7 +55,7 @@ public class Drawer extends JPanel{
     frame.getContentPane().add(drawer);
 
     //入力点列の座標とパラメータ情報を保存、読み出しするボタンの追加
-    JTextField textField = new JTextField("outputEnterpoints/points.csv");
+    JTextField textField = new JTextField("outputEnterpoints/enterpoints_error1.csv");
     frame.getContentPane().add(textField, BorderLayout.NORTH);
     JPanel bottom = new JPanel();
     JButton saveEnterPoints = new JButton("入力点の保存");
@@ -75,11 +75,6 @@ public class Drawer extends JPanel{
     frame.setVisible(true);
   }
 
-//  @Override
-//  public void paintComponent(Graphics g) {
-//    super.paintComponent(g);
-//    drawPoint(100,100,Color.BLACK,g);
-//  }
 
   /**
    * パネルに描画を行います．
@@ -90,15 +85,16 @@ public class Drawer extends JPanel{
   //　repaintメソッドを使用するとpaintメソッドが呼び出されるため，repaintメソッドを用いて再描画を行うことをおすすめします．
   public void paint(Graphics _g) {
     super.paint(_g);
-    // 描画処理を記述する．
 
-
+    for(int i=0; i<=m_points.size()-1; i++){
+      drawPoint(m_points.get(i),Color.GRAY, _g,3.0);
+    }
     /*
       制御点列のリストに制御点が入っている場合は描画を行うような処理を記述する．
      */
     if(m_controlPoints.size() >= 1){
       for(int i=0; i<m_controlPoints.size(); i++) {
-        drawPoint(m_controlPoints.get(i), Color.blue, _g);
+        drawPoint(m_controlPoints.get(i), Color.blue, _g, 4.5);
       }
     }
 
@@ -110,15 +106,8 @@ public class Drawer extends JPanel{
         drawLine(m_evaluatePoints.get(i), m_evaluatePoints.get(i+1), Color.red, _g);
       }
     }
-    if(m_evaluatePoints2.size() >= 1){
-      for(int i=0; i<m_evaluatePoints2.size()-1; i++){
-        drawLine(m_evaluatePoints2.get(i), m_evaluatePoints2.get(i+1), Color.red, _g);
-      }
-    }
 
-    for(int i=0; i<=m_points.size()-1; i++){
-      drawPoint(m_points.get(i),Color.BLACK, _g);
-    }
+
 
 
   }
@@ -129,9 +118,7 @@ public class Drawer extends JPanel{
    * @param _color 色
    * @param _g     グラフィックス
    */
-  public void drawPoint(Point _point, Color _color, Graphics _g) {
-    // 半径を決定します．
-    double radius = POINT_RADIUS;
+  public void drawPoint(Point _point, Color _color, Graphics _g, double _radius) {
     // 描画する色を引数の色で設定します．
     _g.setColor(_color);
     // Graphics型の引数_gをGraphics2D型にキャストします．
@@ -141,12 +128,13 @@ public class Drawer extends JPanel{
       // 描画する際の線の幅を設定します．
       g2D.setStroke(new BasicStroke(STROKE_WIDTH));
       // 指定した座標に指定した半径の点を描画します．
-      g2D.draw(new Ellipse2D.Double(_point.getX() - radius, _point.getY() - radius, radius * 2, radius * 2));
+      g2D.draw(new Ellipse2D.Double(_point.getX() - _radius, _point.getY() - _radius, _radius * 2, _radius * 2));
     } else {
       // 指定した座標に指定した半径の点を描画します．
-      _g.drawOval((int) (_point.getX() - radius), (int) (_point.getY() - radius), (int) (radius * 2), (int) (radius * 2));
+      _g.drawOval((int) (_point.getX() - _radius), (int) (_point.getY() - _radius), (int) (_radius * 2), (int) (_radius * 2));
     }
   }
+
 
   /**
    * 指定した２つの点の座標を結ぶ線分を指定した色で描画します．
@@ -179,31 +167,31 @@ public class Drawer extends JPanel{
     /*
       ここにBezierCurveのインスタンスを生成し評価点列を求める処理を記述する．
      */
-
     BezierCurve bezierCurve = BezierCurve.create(m_controlPoints);
     List<Point> evaluatelist = new ArrayList<>();
-    List<Point> evaluatelist2 = new ArrayList<>();
     List<Point> evaluatelistXYT = new ArrayList<>();
 
-    for(double t=0; t<=1; t+=0.001) {
-      Point points = bezierCurve.evaluate(t,m_w);
-      evaluatelist.add(points);
-      Point pointXYT = Point.createXYT(points.getX(), points.getY(), t);
-      evaluatelistXYT.add(pointXYT);
+    if(m_w>=0) {
+      for (double t = 0; t <= 1; t += 0.001) {
+        Point points = bezierCurve.evaluate(t, m_w);
+        evaluatelist.add(points);
+        Point pointXYT = Point.createXYT(points.getX(), points.getY(), t);
+        evaluatelistXYT.add(pointXYT);
+      }
+    }else{
+      for (double t = 0; t <= 1; t += 0.001) {
+        Point points = bezierCurve.evaluateEx(t, m_w);
+        evaluatelist.add(points);
+        Point pointXYT = Point.createXYT(points.getX(), points.getY(), t);
+        evaluatelistXYT.add(pointXYT);
+      }
     }
 
     // 求めた評価点列をm_evaluatePointsに設定します．
     setEvaluatePoints(evaluatelist);
     setEvaluatePointsXYT(evaluatelistXYT);
 
-    for(double t=0; t<=1; t+=0.001) {
-      Point points2 = bezierCurve.evaluate(t,m_w);
-      evaluatelist2.add(points2);
-    }
-    setEvaluatePoints2(evaluatelist2);
   }
-
-
 
 
   /**
@@ -214,9 +202,6 @@ public class Drawer extends JPanel{
 
     m_evaluatePoints = _evaluatePoints;
 
-  }
-  public void setEvaluatePoints2(List<Point> _evaluatePoints2){
-    m_evaluatePoints2 = _evaluatePoints2;
   }
 
 
@@ -245,9 +230,7 @@ public class Drawer extends JPanel{
   public void load(String fileName) {
 
     m_points.clear();
-    m_points.addAll(Utility.
-            loadPoints(fileName));
-//    createFSC();
+    m_points.addAll(Utility.loadPoints(fileName));
 
     repaint();
 
@@ -327,8 +310,6 @@ public class Drawer extends JPanel{
 
         // repaintメソッドを用いてpaintメソッドを呼び出す
         repaint();
-
-
       }
 
     });
@@ -340,7 +321,7 @@ public class Drawer extends JPanel{
               public void mouseDragged(MouseEvent e) {
                 Point point = Point.createXYT(e.getX(), e.getY(),System.currentTimeMillis() * 0.001);
                 m_points.add(point);
-                drawPoint(point,Color.BLACK,getGraphics());
+                drawPoint(point,Color.GRAY,getGraphics(),3.0);
               }
             }
     );
@@ -371,37 +352,6 @@ public class Drawer extends JPanel{
     return points;
   }
 
-  //点列の距離パラメータの規格化
-  public List<Point> normalizeDistance(Range _range) {
-    double rangeLength = _range.length();
-    List<Point> points = new ArrayList<>();
-    double distanceLength = 0.0;
-    double[] distancePoint = new double[m_points.size()];
-
-    for (int i = 0; i< m_points.size()-1; i++) {
-      double x = m_points.get(i+1).getX()-m_points.get(i).getX();
-      double y = m_points.get(i+1).getY()-m_points.get(i).getY();
-      distancePoint[i] = distanceLength + Math.sqrt( x*x + y*y );
-      distanceLength += Math.sqrt( x*x + y*y );
-    }
-    int j=0;
-    for (Point point : m_points) {
-      points.add(Point.createXYT(point.getX(), point.getY()
-              , _range.start() + (distancePoint[j]) * (rangeLength / distanceLength)));
-      j++;
-    }
-
-    return points;
-  }
-//  @Override
-//  public void paintComponent(Graphics g) {
-//    super.paintComponent(g);
-////    Point point = Point.create(0,0);
-//    drawPoint(point,Color.BLACK,g);
-//    System.out.println("paint");
-//  }
-//  Point point = Point.create(0,0);
-//  List<Point> inputPoints  = new ArrayList<>();
 
   /** 描画パネルの横幅 */
   private static final int WIDTH_SIZE = 800;
@@ -415,7 +365,7 @@ public class Drawer extends JPanel{
   private final List<Point> m_controlPoints = new ArrayList<>();
   /** 評価点列 */
   private List<Point> m_evaluatePoints = new ArrayList<>();
-  private List<Point> m_evaluatePoints2 =new ArrayList<>();
+
   private List<Point> m_evaluatePointsXYT = new ArrayList<>();
 
 

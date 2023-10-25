@@ -43,15 +43,21 @@ public class Search implements NelderMead.ObjectiveFunction {
         fPoints.add(farPoint);
         fPoints.add(Point.create(1,0));
 
-
         //補間の計算
         //入力点列のパラメータを修正
         List<Point> modifiedPoints = new ArrayList<>(calculateT(_points,fPoints,w));
 
         //BのMatrixを求める
         double[][] elements = new double[modifiedPoints.size()][];
-        for (int i=0; i<=modifiedPoints.size()-1; i++){
-            elements[i] = BezierCurve.Brow(modifiedPoints.get(i).time(), w);
+        if(m_w>=0) {
+            for (int i = 0; i <= modifiedPoints.size() - 1; i++) {
+                elements[i] = BezierCurve.Brow(modifiedPoints.get(i).time(), w);
+            }
+        }else{
+            BezierCurve bc = BezierCurve.create(fPoints);
+            for (int i = 0; i <= modifiedPoints.size() - 1; i++) {
+                elements[i] = bc.Qrow(modifiedPoints.get(i).time(), w);
+            }
         }
         Matrix B = Matrix.create(elements);
 
@@ -84,8 +90,6 @@ public class Search implements NelderMead.ObjectiveFunction {
         m_controlPoints.add(point0);
         m_controlPoints.add(point1);
         m_controlPoints.add(point2);
-
-
     }
 
     /**
@@ -94,7 +98,7 @@ public class Search implements NelderMead.ObjectiveFunction {
      * @return 誤差
      */
     public double calc(double[] values){
-        double error=0;
+        double error;
         List<Point> fPoints = new ArrayList<>();    //規格化楕円弧モデルの制御点列
 
         fPoints.add(Point.create(0,0));
@@ -109,15 +113,21 @@ public class Search implements NelderMead.ObjectiveFunction {
             return Double.POSITIVE_INFINITY;
         }
 
-
         //入力点列のパラメータを修正
         List<Point> modified_points = new ArrayList<>(calculateT(m_points,fPoints,w));
 
         //最小二乗法の計算をする
         //BのMatrixを求める
         double[][] elements = new double[modified_points.size()][];
-        for (int i=0; i<=modified_points.size()-1; i++){
-            elements[i] = BezierCurve.Brow(modified_points.get(i).time(), w);
+        if(w>=0) {
+            for (int i = 0; i <= modified_points.size() - 1; i++) {
+                elements[i] = BezierCurve.Brow(modified_points.get(i).time(), w);
+            }
+        }else{
+            BezierCurve bc = BezierCurve.create(fPoints);
+            for (int i = 0; i <= modified_points.size() - 1; i++) {
+                elements[i] = bc.Qrow(modified_points.get(i).time(), w);
+            }
         }
         Matrix B = Matrix.create(elements);
 
@@ -139,23 +149,15 @@ public class Search implements NelderMead.ObjectiveFunction {
 
         //制御点を求める
         Matrix x = a.solve(b);
-        if(x==null){
-            System.out.println("w:"+w);
-            System.out.println("B"+B);
-            System.out.println("p"+p);
-            System.out.println("values2"+values[2]);
-        }
-
 
         //errorを求める
-        Matrix  Nd = B.product(x);
+        Matrix Nd = B.product(x);
         Matrix Ndp = Nd.minus(p);
         Matrix Ndptrans = Ndp.transpose();
         Matrix NdpSquare = Ndptrans.product(Ndp);
         error = NdpSquare.get(0,0) + NdpSquare.get(1,1);
 
         return error;
-
     }
 
 //  範囲を生成するメソッド
@@ -182,9 +184,16 @@ public class Search implements NelderMead.ObjectiveFunction {
         BezierCurve bezierCurve = BezierCurve.create(_controlPoints);
         List<Point> evaluateNEAList = new ArrayList<>();    //NEAはNormalized Ellipse Arc
 
-        for(double t=0; t<=1; t+=0.001) {
-            Point points = bezierCurve.evaluate(t,_w);
-            evaluateNEAList.add(points);
+        if(_w>=0) {
+            for (double t = 0; t <= 1; t += 0.001) {
+                Point points = bezierCurve.evaluate(t, _w);
+                evaluateNEAList.add(points);
+            }
+        }else{
+            for (double t = 0; t <= 1; t += 0.001) {
+                Point points = bezierCurve.evaluateEx(t, _w);
+                evaluateNEAList.add(points);
+            }
         }
         //規格化楕円弧モデルの距離パラメータを計算
         List<Double> distanceNEAlist = new ArrayList<>();
