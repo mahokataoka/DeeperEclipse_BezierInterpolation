@@ -56,10 +56,9 @@ public class BezierCurve {
         double paramaterSe = parameterEx(_w);
         List<Double> q = new ArrayList<>();
 
-        if(_t>=0 && _t<1/(2-paramaterSe)){
+        if(_t<1/(2-paramaterSe)){
             q = basisfuncThreequqrters(_t,paramaterSe);
-        }
-        if(_t>1/(2-paramaterSe) && _t<=1){
+        }else{
             q = basisfuncRound(_t,paramaterSe);
         }
 
@@ -165,10 +164,9 @@ public class BezierCurve {
         double paramaterSe = parameterEx(_w);
         double Qrow[] = new double[3];
         List<Double> q = new ArrayList<>();
-        if(_t>=0 && _t<1/(2-paramaterSe)){
+        if(_t<1/(2-paramaterSe)){
             q = basisfuncThreequqrters(_t,paramaterSe);
-        }
-        if(_t>1/(2-paramaterSe) && _t<=1) {
+        }else  {
             q = basisfuncRound(_t, paramaterSe);
         }
             Qrow[0] = q.get(0)/q.get(3);

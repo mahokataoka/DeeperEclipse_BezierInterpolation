@@ -94,7 +94,7 @@ public class Drawer extends JPanel{
      */
     if(m_controlPoints.size() >= 1){
       for(int i=0; i<m_controlPoints.size(); i++) {
-        drawPoint(m_controlPoints.get(i), Color.blue, _g, 4.5);
+        drawPoint(m_controlPoints.get(i), Color.BLACK, _g, 4.5);
       }
     }
 
@@ -103,7 +103,7 @@ public class Drawer extends JPanel{
      */
     if(m_evaluatePoints.size() >= 1){
       for(int i=0; i<m_evaluatePoints.size()-1; i++){
-        drawLine(m_evaluatePoints.get(i), m_evaluatePoints.get(i+1), Color.red, _g);
+        drawLine(m_evaluatePoints.get(i), m_evaluatePoints.get(i+1), Color.BLUE, _g);
       }
     }
 
@@ -326,12 +326,7 @@ public class Drawer extends JPanel{
             }
     );
   }
-  /**
-   * 点列の時刻パラメータが0始まりになるように全体をシフトします.
-   */
-  public List<Point> shiftPointsTimeZero() {
-    return normalizePoints(Range.creates(0, 1));
-  }
+
 
   /**
    * 点列の時刻パラメータの正規化をします.
