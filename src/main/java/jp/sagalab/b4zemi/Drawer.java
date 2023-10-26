@@ -55,7 +55,7 @@ public class Drawer extends JPanel{
     frame.getContentPane().add(drawer);
 
     //入力点列の座標とパラメータ情報を保存、読み出しするボタンの追加
-    JTextField textField = new JTextField("outputEnterpoints/enterpoints_error1.csv");
+    JTextField textField = new JTextField("enterpoints/enterpoints_about.csv");
     frame.getContentPane().add(textField, BorderLayout.NORTH);
     JPanel bottom = new JPanel();
     JButton saveEnterPoints = new JButton("入力点の保存");
