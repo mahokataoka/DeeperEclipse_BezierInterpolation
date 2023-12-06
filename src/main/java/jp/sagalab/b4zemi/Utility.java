@@ -62,8 +62,8 @@ public class Utility {
         }
 
         javaplot.addPlot(graph);
-        javaplot.set("xlabel","'parameter'");
-        javaplot.set("ylabel","'distance'");
+//        javaplot.set("xlabel","'parameter'");
+//        javaplot.set("ylabel","'distance'");
         javaplot.plot();
 
     }

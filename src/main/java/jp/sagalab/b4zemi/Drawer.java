@@ -27,8 +27,7 @@ public class Drawer extends JPanel{
    * @throws IllegalArgumentException 点の半径が0以下であった場合
    */
 
-//    double w1 = Math.cos(Math.PI/2);
-//  double w1 = 0;
+
   public static void create() {
     // インスタンス生成前に不正な値がないかチェックします．
     if (WIDTH_SIZE <= 0) {
@@ -55,7 +54,7 @@ public class Drawer extends JPanel{
     frame.getContentPane().add(drawer);
 
     //入力点列の座標とパラメータ情報を保存、読み出しするボタンの追加
-    JTextField textField = new JTextField("enterpoints/enterpoints_about.csv");
+    JTextField textField = new JTextField("enterpoints/enterpoints_about-1.csv");
     frame.getContentPane().add(textField, BorderLayout.NORTH);
     JPanel bottom = new JPanel();
     JButton saveEnterPoints = new JButton("入力点の保存");
@@ -94,7 +93,7 @@ public class Drawer extends JPanel{
      */
     if(m_controlPoints.size() >= 1){
       for(int i=0; i<m_controlPoints.size(); i++) {
-        drawPoint(m_controlPoints.get(i), Color.BLACK, _g, 4.5);
+        drawPoint(m_controlPoints.get(i), Color.BLACK, _g, 15);
       }
     }
 
@@ -234,6 +233,9 @@ public class Drawer extends JPanel{
 
     repaint();
 
+    //動作時間を図る
+    m_startTime=System.currentTimeMillis();
+
     Search search = Search.create(m_points);
 
     m_controlPoints.clear();
@@ -247,6 +249,10 @@ public class Drawer extends JPanel{
     calculate();
 
     repaint();
+    m_endTime=System.currentTimeMillis();
+    long time = m_endTime-m_startTime;
+    System.out.println("start:"+m_startTime+", end:"+m_endTime);
+    System.out.println("time:"+ time);
 //
 //    List<Double> distanceList = Utility.calcDistance(_points);
 //    JavaPlot javaplot = new JavaPlot();
@@ -286,7 +292,7 @@ public class Drawer extends JPanel{
 
       @Override
       public void mouseReleased(MouseEvent e) {
-
+        m_startTime = System.currentTimeMillis();
         Search search = Search.create(m_points);
 
         repaint();
@@ -302,6 +308,10 @@ public class Drawer extends JPanel{
         calculate();
 
         repaint();
+        m_endTime = System.currentTimeMillis();
+        long time = m_endTime-m_startTime;
+        System.out.println("start:"+m_startTime+", end:"+m_endTime);
+        System.out.println("time:"+ time);
     }
 
       @Override
@@ -368,4 +378,8 @@ public class Drawer extends JPanel{
   private List<Point> m_points = new ArrayList<>();
   /** 重み　*/
   private double m_w;
+
+  /**計測*/
+  long m_startTime;
+  long m_endTime;
 }

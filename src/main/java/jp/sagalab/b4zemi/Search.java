@@ -26,13 +26,17 @@ public class Search implements NelderMead.ObjectiveFunction {
     public Search(List<Point> _points){
         //入力点列
         m_points = _points;
+        m_count=0;
 
         double[] search = NelderMead.search(createRange(), 0.001, 1000, this::calc);
 
-        double w = search[2];
+        System.out.println("count calc:"+m_count);
+        double theta = search[2];
+        double w = Math.cos(theta/2);
+//        double w = search[2];
         m_w=w;
 
-        System.out.println("far_x:"+search[0]+" far_y:"+search[1]+" w:"+ w + " sig_x"+ search[2]);
+        System.out.println("far_x:"+search[0]+" far_y:"+search[1]+" w:"+ w + " theta:"+ search[2]);
 
         //最遠点
         Point farPoint = Point.create(search[0], search[1]);
@@ -98,6 +102,7 @@ public class Search implements NelderMead.ObjectiveFunction {
      * @return 誤差
      */
     public double calc(double[] values){
+        m_count++;
         double error;
         List<Point> fPoints = new ArrayList<>();    //規格化楕円弧モデルの制御点列
 
@@ -105,13 +110,24 @@ public class Search implements NelderMead.ObjectiveFunction {
         fPoints.add(Point.create(values[0],values[1]));
         fPoints.add(Point.create(1.0,0));
 
-        double w = values[2];
-        if(w>=1){
+        if(values[2]<0){
             return Double.POSITIVE_INFINITY;
         }
-        if(w<=-1){
+        if(values[2]>Math.PI*2){
             return Double.POSITIVE_INFINITY;
         }
+
+        double theta = values[2];
+        double w = Math.cos(theta/2);
+
+//        double w = values[2];
+//
+//        if(w<-1){
+//            return Double.POSITIVE_INFINITY;
+//        }
+//        if(w>1){
+//            return Double.POSITIVE_INFINITY;
+//        }
 
         //入力点列のパラメータを修正
         List<Point> modified_points = new ArrayList<>(calculateT(m_points,fPoints,w));
@@ -168,7 +184,8 @@ public class Search implements NelderMead.ObjectiveFunction {
         //最遠点のy座標の定義域
         range[1] = Range.create(0, 1);
         //重みwの定義域
-        range[2] = Range.create(-0.5, 0.5);
+        range[2] = Range.create(Math.PI*(2.0/3.0), Math.PI*(4.0/3.0));
+//        range[2] = Range.create(-0.5, 0.5);
 
         return range;
     }
@@ -276,4 +293,5 @@ public class Search implements NelderMead.ObjectiveFunction {
     /** 重み　*/
     public double m_w;
 
+    int m_count;
 }
